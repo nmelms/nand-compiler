@@ -36,8 +36,13 @@ impl Tokenizer {
 
     pub fn advance(&mut self) {
         let mut s: String = String::from("");
-        let cur = self.chars[self.i];
+        let mut cur = self.chars[self.i];
 
+        // skip spaces
+        while cur == ' ' {
+            self.i += 1;
+            cur =  self.chars[self.i];
+        }
 
         // consume keyword
         if cur.is_ascii_alphabetic(){
