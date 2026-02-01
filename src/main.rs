@@ -5,7 +5,10 @@ mod tokenizer;
 fn main() {
     println!("running in main");
 
-    let tokenizer = Tokenizer::new("test.jack");
+    let mut tokenizer = Tokenizer::new("test.jack");
+    tokenizer.advance();
+    tokenizer.advance();
+    tokenizer.advance();
 
 
 }
