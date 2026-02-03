@@ -16,7 +16,7 @@ pub enum TokenType {
     StringConst,
 }
 
-const KEYWORDS: [&str; 21] = [    
+const KEYWORDS: [&str; 21] = [
     "class",
     "constructor",
     "function",
@@ -79,12 +79,13 @@ impl Tokenizer {
                 s.push(self.chars[self.i]);
                 self.i += 1;
             }
-            if KEYWORDS.contains(s){
+            if KEYWORDS.contains(&s.as_str()) {
                 self.current_token_type = Some(TokenType::Keyword);
-            }else{
+            } else {
                 self.current_token_type = Some(TokenType::Identifier);
             }
             self.current_token = s;
+            return;
         }
 
         //consume symbol
@@ -93,6 +94,7 @@ impl Tokenizer {
             self.current_token_type = Some(TokenType::Symbol);
 
             self.i += 1;
+            return;
         }
 
         //consume int
@@ -103,11 +105,23 @@ impl Tokenizer {
             }
             self.current_token_type = Some(TokenType::IntConst);
             self.current_token = s;
+            return;
+        }
+
+        // consume string
+        if self.chars[self.i] == '"' {
+            self.i += 1;
+            while self.chars[self.i] != '"' {
+                s.push(self.chars[self.i]);
+                self.i += 1;
+            }
+            self.i += 1;
+            self.current_token_type = Some(TokenType::StringConst);
+            self.current_token = s;
+            return;
         }
     }
-
     fn is_symbol(cur: char) -> bool {
         "{}()[].,;+-*/&|<>=~".contains(cur)
     }
-
 }
