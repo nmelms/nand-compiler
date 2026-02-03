@@ -4,18 +4,41 @@ pub struct Tokenizer {
     chars: Vec<char>,
     i: usize,
     pub current_token: String,
+    current_token_type: Option<TokenType>,
 }
 
 // #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-// pub enum TokenType {
-//     Keyword,
-//     Symbol,
-//     Identifier,
-//     IntConst,
-//     StringConst,
-//     None,
-// }
+pub enum TokenType {
+    Keyword,
+    Symbol,
+    Identifier,
+    IntConst,
+    StringConst,
+}
 
+const KEYWORDS: [&str; 21] = [    
+    "class",
+    "constructor",
+    "function",
+    "method",
+    "field",
+    "static",
+    "var",
+    "int",
+    "char",
+    "boolean",
+    "void",
+    "true",
+    "false",
+    "null",
+    "this",
+    "let",
+    "do",
+    "if",
+    "else",
+    "while",
+    "return",
+];
 impl Tokenizer {
     pub fn new(path: &str) -> Self {
         let chars = std::fs::read_to_string(path)
@@ -24,11 +47,13 @@ impl Tokenizer {
             .collect();
         let i = 0;
         let current_token = String::from("None");
+        let current_token_type = None;
 
         Self {
             chars,
             i,
             current_token,
+            current_token_type,
         }
     }
 
@@ -48,11 +73,16 @@ impl Tokenizer {
             self.i += 1;
         }
 
-        // consume keyword
+        // consume keyword or identifier
         if self.chars[self.i].is_ascii_alphabetic() {
             while self.chars[self.i].is_ascii_alphabetic() {
                 s.push(self.chars[self.i]);
                 self.i += 1;
+            }
+            if KEYWORDS.contains(s){
+                self.current_token_type = Some(TokenType::Keyword);
+            }else{
+                self.current_token_type = Some(TokenType::Identifier);
             }
             self.current_token = s;
         }
@@ -60,11 +90,24 @@ impl Tokenizer {
         //consume symbol
         if Tokenizer::is_symbol(self.chars[self.i]) {
             self.current_token = self.chars[self.i].to_string();
+            self.current_token_type = Some(TokenType::Symbol);
+
             self.i += 1;
+        }
+
+        //consume int
+        if self.chars[self.i].is_ascii_digit() {
+            while self.chars[self.i].is_ascii_digit() {
+                s.push(self.chars[self.i]);
+                self.i += 1;
+            }
+            self.current_token_type = Some(TokenType::IntConst);
+            self.current_token = s;
         }
     }
 
     fn is_symbol(cur: char) -> bool {
         "{}()[].,;+-*/&|<>=~".contains(cur)
     }
+
 }
