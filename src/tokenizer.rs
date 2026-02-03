@@ -4,7 +4,7 @@ pub struct Tokenizer {
     chars: Vec<char>,
     i: usize,
     pub current_token: String,
-    current_token_type: Option<TokenType>,
+    pub current_token_type: Option<TokenType>,
 }
 
 // #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -121,6 +121,40 @@ impl Tokenizer {
             return;
         }
     }
+    pub fn keyword(&self) -> Option<&TokenType> {
+        match self.current_token_type.as_ref() {
+            Some(TokenType::Keyword) => self.current_token_type.as_ref(),
+            _ => None,
+        }
+    }
+
+    pub fn symbol(&self) -> Option<&TokenType> {
+        match self.current_token_type.as_ref() {
+            Some(TokenType::Symbol) => self.current_token_type.as_ref(),
+            _ => None,
+        }
+    }
+
+    pub fn identifier(&self) -> Option<&TokenType> {
+        match self.current_token_type.as_ref() {
+            Some(TokenType::Identifier) => self.current_token_type.as_ref(),
+            _ => None,
+        }
+    }
+    pub fn intVal(&self) -> Option<&TokenType> {
+        match self.current_token_type.as_ref() {
+            Some(TokenType::IntConst) => self.current_token_type.as_ref(),
+            _ => None,
+        }
+    }
+
+    pub fn stringVal(&self) -> Option<&TokenType> {
+        match self.current_token_type.as_ref() {
+            Some(TokenType::StringConst) => self.current_token_type.as_ref(),
+            _ => None,
+        }
+    }
+
     fn is_symbol(cur: char) -> bool {
         "{}()[].,;+-*/&|<>=~".contains(cur)
     }
