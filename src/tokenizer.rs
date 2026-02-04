@@ -136,7 +136,7 @@ impl Tokenizer {
                 } else {
                     s.push(self.chars[self.i]);
                 }
-                
+
                 self.i += 1;
             }
             self.i += 1;
