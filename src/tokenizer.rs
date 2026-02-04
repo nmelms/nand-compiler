@@ -90,7 +90,19 @@ impl Tokenizer {
 
         //consume symbol
         if Tokenizer::is_symbol(self.chars[self.i]) {
-            self.current_token = self.chars[self.i].to_string();
+            let special_symbols = &['<', '>', '"', '&'];
+
+            if (special_symbols.contains(&self.chars[self.i])) {
+                match &self.chars[self.i] {
+                    '<' => self.current_token = "&lt;".to_string(),
+                    '>' => self.current_token = "&gt;".to_string(),
+                    '"' => self.current_token = "&quot;".to_string(),
+                    '&' => self.current_token = "amp;".to_string(),
+                    _ => println!("something weird. happened"),
+                }
+            } else {
+                self.current_token = self.chars[self.i].to_string();
+            }
             self.current_token_type = Some(TokenType::Symbol);
 
             self.i += 1;
@@ -110,9 +122,21 @@ impl Tokenizer {
 
         // consume string
         if self.chars[self.i] == '"' {
+            let special_symbols = &['<', '>', '"', '&'];
             self.i += 1;
             while self.chars[self.i] != '"' {
-                s.push(self.chars[self.i]);
+                if special_symbols.contains(&self.chars[self.i]) {
+                    match &self.chars[self.i] {
+                        '<' => s.push_str("&lt;"),
+                        '>' => s.push_str("&gt;"),
+                        '"' => s.push_str("&quot;"),
+                        '&' => s.push_str("&amp;"),
+                        _ => println!("something weird. happened"),
+                    }
+                } else {
+                    s.push(self.chars[self.i]);
+                }
+                
                 self.i += 1;
             }
             self.i += 1;

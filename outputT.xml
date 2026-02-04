@@ -18,19 +18,19 @@
 <keyword>let</keyword>
 <identifier>x</identifier>
 <symbol>=</symbol>
-<intergerConstant>10</intergetConstant>
+<integerConstant>10</integerConstant>
 <symbol>;</symbol>
 <keyword>let</keyword>
 <identifier>x</identifier>
 <symbol>=</symbol>
 <identifier>x</identifier>
 <symbol>+</symbol>
-<intergerConstant>1</intergetConstant>
+<integerConstant>1</integerConstant>
 <symbol>;</symbol>
 <keyword>let</keyword>
 <identifier>a</identifier>
 <symbol>[</symbol>
-<intergerConstant>2</intergetConstant>
+<integerConstant>2</integerConstant>
 <symbol>]</symbol>
 <symbol>=</symbol>
 <identifier>x</identifier>
@@ -48,14 +48,14 @@
 <symbol>.</symbol>
 <identifier>printString</identifier>
 <symbol>(</symbol>
-<stringConstant>x < 10 & y > 2</stringConstant>
+<stringConstant>x &lt; 10 amp; y &gt; 2</stringConstant>
 <symbol>)</symbol>
 <symbol>;</symbol>
 <keyword>if</keyword>
 <symbol>(</symbol>
 <identifier>x</identifier>
-<symbol><</symbol>
-<intergerConstant>12</intergetConstant>
+<symbol>&lt;</symbol>
+<integerConstant>12</integerConstant>
 <symbol>)</symbol>
 <symbol>{</symbol>
 <keyword>let</keyword>
@@ -70,7 +70,7 @@
 <keyword>let</keyword>
 <identifier>x</identifier>
 <symbol>=</symbol>
-<intergerConstant>0</intergetConstant>
+<integerConstant>0</integerConstant>
 <symbol>;</symbol>
 <symbol>}</symbol>
 <keyword>return</keyword>

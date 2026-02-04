@@ -15,27 +15,27 @@ fn main() {
         match tokenizer.current_token_type {
             Some(TokenType::Identifier) => writeln!(
                 output,
-                "<identifier>{}</identifier>",
+                "<identifier> {} </identifier>",
                 tokenizer.current_token
             )
             .expect("failed to write"),
             Some(TokenType::Keyword) => {
-                writeln!(output, "<keyword>{}</keyword>", tokenizer.current_token)
+                writeln!(output, "<keyword> {} </keyword>", tokenizer.current_token)
                     .expect("failed to write")
             }
             Some(TokenType::Symbol) => {
-                writeln!(output, "<symbol>{}</symbol>", tokenizer.current_token)
+                writeln!(output, "<symbol> {} </symbol>", tokenizer.current_token)
                     .expect("failed to write")
             }
             Some(TokenType::IntConst) => writeln!(
                 output,
-                "<intergerConstant>{}</intergetConstant>",
+                "<integerConstant> {} </integerConstant>",
                 tokenizer.current_token
             )
             .expect("failed to write"),
             Some(TokenType::StringConst) => writeln!(
                 output,
-                "<stringConstant>{}</stringConstant>",
+                "<stringConstant> {} </stringConstant>",
                 tokenizer.current_token
             )
             .expect("failed to write"),
