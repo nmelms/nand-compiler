@@ -13,7 +13,10 @@ fn main() {
     let output = File::create("output.xml").expect("failed to create the output file");
 
     let mut tokenizer = Tokenizer::new(&source);
+    // need this adavnce since we init tokenizer with none
+    tokenizer.advance();
     let mut engine = compilation_engine::ComplationEngine::new(tokenizer, output);
+    engine.comple_class();
 
     // let path = Path::new(&source);
 }

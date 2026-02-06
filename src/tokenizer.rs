@@ -92,7 +92,7 @@ impl Tokenizer {
         if Tokenizer::is_symbol(self.chars[self.i]) {
             let special_symbols = &['<', '>', '"', '&'];
 
-            if (special_symbols.contains(&self.chars[self.i])) {
+            if special_symbols.contains(&self.chars[self.i]) {
                 match &self.chars[self.i] {
                     '<' => self.current_token = "&lt;".to_string(),
                     '>' => self.current_token = "&gt;".to_string(),
