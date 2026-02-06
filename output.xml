@@ -12,6 +12,27 @@
 <keyword> field </keyword>
 <keyword> int </keyword>
 <identifier> y </identifier>
+<symbol> , </symbol>
+<identifier> z </identifier>
 <symbol> ; </symbol>
 </classVarDec>
+<keyword> function </keyword>
+<keyword> void </keyword>
+<identifier> test </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<keyword> function </keyword>
+<keyword> int </keyword>
+<identifier> add </identifier>
+<symbol> ( </symbol>
+<keyword> int </keyword>
+<identifier> a </identifier>
+<symbol> , </symbol>
+<keyword> int </keyword>
+<identifier> b </identifier>
+<symbol> , </symbol>
+<identifier> Main </identifier>
+<identifier> m </identifier>
+<symbol> ) </symbol>
 <symbol> } </symbol>
+</class>
