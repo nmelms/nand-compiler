@@ -7,7 +7,7 @@ pub struct Tokenizer {
     pub current_token_type: Option<TokenType>,
 }
 
-// #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum TokenType {
     Keyword,
     Symbol,
