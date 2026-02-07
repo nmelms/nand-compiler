@@ -2,6 +2,9 @@ class Main {
     static int x;
     field int y, z;
 
-    function void test() 
-    function int add(int a, int b, Main m) 
+    function int add(int a, int b, Main m){
+        var int x;
+        var int y;
+
+    } 
 }

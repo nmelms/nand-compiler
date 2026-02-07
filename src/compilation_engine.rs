@@ -82,18 +82,107 @@ impl ComplationEngine {
             );
             std::process::exit(1);
         }
-
         self.process("(".to_string());
-
         self.compile_parameter_list();
-
         self.process(")".to_string());
+        self.compile_subroutine_body();
+        self.compile_statements();
+        self.process("}".to_string());
     }
 
     fn compile_subroutine_body(&mut self) {
         self.process("{".to_string());
         while self.tokenizer.current_token == "var" {
             self.compile_var_dec();
+        }
+    }
+
+    fn compile_statements(&mut self) {
+        match self.tokenizer.current_token.as_str() {
+            "let" => self.compile_let(),
+            "if" => self.compile_if(),
+            "while" => self.compile_while(),
+            "do" => self.compile_do(),
+            _ => println!("the end"),
+        }
+    }
+
+    fn compile_let(&mut self) {
+        self.process("let".to_string());
+        // varName
+        if self.tokenizer.current_token_type == Some(TokenType::Identifier) {
+            self.process(self.tokenizer.current_token.to_string());
+        }
+        // [ expression ]
+        if self.tokenizer.current_token == "[" {
+            self.process("[".to_string());
+            self.compile_expression();
+            self.process("]".to_string());
+        }
+    }
+
+    fn compile_expression(&mut self) {
+        // todo!("implement compile expression");
+        self.compile_term();
+    }
+
+    fn compile_term(&mut self) {
+        match self.tokenizer.current_token_type {
+            Some(TokenType::IntConst) => {
+                self.process(self.tokenizer.current_token.to_string());
+            }
+            Some(TokenType::StringConst) => {
+                self.process(self.tokenizer.current_token.to_string());
+            }
+            Some(TokenType::Keyword) => match self.tokenizer.current_token.as_str() {
+                "true" => self.process(self.tokenizer.current_token.to_string()),
+                "false" => self.process(self.tokenizer.current_token.to_string()),
+                "null" => self.process(self.tokenizer.current_token.to_string()),
+                "this" => self.process(self.tokenizer.current_token.to_string()),
+                _ => {
+                    eprintln!(
+                        "Syntax error: expected (true | false | null | this), got '{}'",
+                        self.tokenizer.current_token
+                    );
+                    std::process::exit(1);
+                }
+            },
+            Some(TokenType::Identifier) => {
+                self.process(self.tokenizer.current_token.to_string());
+                match self.tokenizer.current_token.as_str() {
+                    "[" => {
+                        self.process("[".to_string());
+                        self.compile_expression();
+                        self.process("]".to_string())
+                    }
+                    // "(" => {
+                    //     self.process("(".to_string());
+                    //     self.compile_expression();
+                    //     self.process(")".to_string())
+                    // }
+                    _ => return,
+                }
+            }
+            Some(TokenType::Symbol) => match self.tokenizer.current_token.as_str() {
+                // unary op
+                "-" => self.process(self.tokenizer.current_token.to_string()),
+                "~" => self.process(self.tokenizer.current_token.to_string()),
+                "(" => {
+                    self.process("(".to_string());
+                    self.compile_expression();
+                    self.process(")".to_string())
+                }
+
+                _ => {
+                    eprintln!(
+                        "Syntax error: expected a unaryOp, got '{}'",
+                        self.tokenizer.current_token
+                    );
+                    std::process::exit(1);
+                }
+            },
+
+            _ => print!("error"),
         }
     }
 
