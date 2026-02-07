@@ -155,11 +155,12 @@ impl ComplationEngine {
                         self.compile_expression();
                         self.process("]".to_string())
                     }
-                    // "(" => {
-                    //     self.process("(".to_string());
-                    //     self.compile_expression();
-                    //     self.process(")".to_string())
-                    // }
+                    // subroutine call
+                    "(" => {
+                        self.process("(".to_string());
+                        self.compile_expression_list();
+                        self.process(")".to_string())
+                    }
                     _ => return,
                 }
             }
@@ -183,6 +184,22 @@ impl ComplationEngine {
             },
 
             _ => print!("error"),
+        }
+    }
+
+    fn compile_expression_list(&mut self) -> i32 {
+        let mut total = 0;
+        if self.tokenizer.current_token != ")".to_string(){
+            total += 1;
+            self.compile_expression();
+            while self.tokenizer.current_token == ','.to_string(){
+                self.process(",".to_string() );
+                total += 1;
+                self.compile_expression();
+            }
+            return total;
+        }else{
+            return total;
         }
     }
 
