@@ -115,12 +115,12 @@ impl ComplationEngine {
         {
             match self.tokenizer.current_token.as_str() {
                 "let" => self.compile_let(),
-                // "if" => self.compile_if(),
+                "if" => self.compile_if(),
                 // "while" => self.compile_while(),
                 // "do" => self.compile_do(),
                 _ => println!("the end"),
             }
-        }
+        } 
     }
 
     fn compile_let(&mut self) {
@@ -139,6 +139,22 @@ impl ComplationEngine {
         self.process("=".to_string());
         self.compile_expression();
         self.process(";".to_string())
+    }
+
+    fn compile_if(&mut self){
+        self.process("if".to_string());
+        self.process("(".to_string());
+        self.compile_expression();
+        self.process(")".to_string());
+        self.process("{".to_string());
+        self.compile_statements();
+        self.process("}".to_string());
+        if self.tokenizer.current_token == "else".to_string(){
+            self.process("else".to_string());
+            self.process("{".to_string());
+            self.compile_statements();
+            self.process("}".to_string());
+        }
     }
 
     fn compile_expression(&mut self) {

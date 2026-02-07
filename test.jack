@@ -7,6 +7,15 @@ class Main {
         var int y;
 
         let x = a + b;
-        let y = x;
+
+        if (x > 0) {
+            let y = x;
+        }
+
+        if (a = b) {
+            let y = a;
+        } else {
+            let y = b;
+        }
     }
 }
