@@ -38,5 +38,18 @@
 <keyword> int </keyword>
 <identifier> y </identifier>
 <symbol> ; </symbol>
+<keyword> let </keyword>
+<identifier> x </identifier>
+<symbol> = </symbol>
+<identifier> a </identifier>
+<symbol> + </symbol>
+<identifier> b </identifier>
+<symbol> ; </symbol>
+<keyword> let </keyword>
+<identifier> y </identifier>
+<symbol> = </symbol>
+<identifier> x </identifier>
+<symbol> ; </symbol>
+<symbol> } </symbol>
 <symbol> } </symbol>
 </class>

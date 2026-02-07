@@ -99,7 +99,7 @@ impl Tokenizer {
                         '<' => self.current_token = "&lt;".to_string(),
                         '>' => self.current_token = "&gt;".to_string(),
                         '"' => self.current_token = "&quot;".to_string(),
-                        '&' => self.current_token = "amp;".to_string(),
+                        '&' => self.current_token = "&amp;".to_string(),
                         _ => println!("something weird. happened"),
                     }
                 } else {

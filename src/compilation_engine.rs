@@ -18,7 +18,16 @@ impl ComplationEngine {
     pub fn comple_class(&mut self) {
         writeln!(self.output, "<class>").unwrap();
         self.process("class".to_string());
-        self.process(self.tokenizer.current_token.clone());
+        if self.tokenizer.current_token_type == Some(TokenType::Identifier) {
+            self.process(self.tokenizer.current_token.clone());
+        } else {
+            eprintln!(
+                "Syntax error: expected className identifier, got '{}'",
+                self.tokenizer.current_token
+            );
+            std::process::exit(1);
+        }
+
         self.process("{".to_string());
         while self.tokenizer.current_token == "static" || self.tokenizer.current_token == "field" {
             self.compile_class_var_dec();
@@ -98,12 +107,19 @@ impl ComplationEngine {
     }
 
     fn compile_statements(&mut self) {
-        match self.tokenizer.current_token.as_str() {
-            "let" => self.compile_let(),
-            "if" => self.compile_if(),
-            "while" => self.compile_while(),
-            "do" => self.compile_do(),
-            _ => println!("the end"),
+        while self.tokenizer.current_token == "let".to_string()
+            || self.tokenizer.current_token == "if".to_string()
+            || self.tokenizer.current_token == "while".to_string()
+            || self.tokenizer.current_token == "do".to_string()
+            || self.tokenizer.current_token == "return".to_string()
+        {
+            match self.tokenizer.current_token.as_str() {
+                "let" => self.compile_let(),
+                // "if" => self.compile_if(),
+                // "while" => self.compile_while(),
+                // "do" => self.compile_do(),
+                _ => println!("the end"),
+            }
         }
     }
 
@@ -119,11 +135,22 @@ impl ComplationEngine {
             self.compile_expression();
             self.process("]".to_string());
         }
+
+        self.process("=".to_string());
+        self.compile_expression();
+        self.process(";".to_string())
     }
 
     fn compile_expression(&mut self) {
-        // todo!("implement compile expression");
         self.compile_term();
+
+        while matches!(
+            self.tokenizer.current_token.as_str(),
+            "+" | "-" | "*" | "/" | "|" | "=" | "&lt;" | "&gt;" | "&amp;"
+        ) {
+            self.process(self.tokenizer.current_token.to_string());
+            self.compile_term();
+        }
     }
 
     fn compile_term(&mut self) {
@@ -161,6 +188,22 @@ impl ComplationEngine {
                         self.compile_expression_list();
                         self.process(")".to_string())
                     }
+                    // other type of subroutiner call
+                    "." => {
+                        self.process(".".to_string());
+                        if self.tokenizer.current_token_type == Some(TokenType::Identifier) {
+                            self.process(self.tokenizer.current_token.to_string());
+                        } else {
+                            eprintln!(
+                                "Syntax error: expected subroutineName, got '{}'",
+                                self.tokenizer.current_token
+                            );
+                            std::process::exit(1);
+                        }
+                        self.process("(".to_string());
+                        self.compile_expression_list();
+                        self.process(")".to_string())
+                    }
                     _ => return,
                 }
             }
@@ -189,16 +232,16 @@ impl ComplationEngine {
 
     fn compile_expression_list(&mut self) -> i32 {
         let mut total = 0;
-        if self.tokenizer.current_token != ")".to_string(){
+        if self.tokenizer.current_token != ")".to_string() {
             total += 1;
             self.compile_expression();
-            while self.tokenizer.current_token == ','.to_string(){
-                self.process(",".to_string() );
+            while self.tokenizer.current_token == ','.to_string() {
+                self.process(",".to_string());
                 total += 1;
                 self.compile_expression();
             }
             return total;
-        }else{
+        } else {
             return total;
         }
     }
@@ -332,15 +375,18 @@ impl ComplationEngine {
     }
 
     fn process(&mut self, token: String) {
-        println!("{} {}", &self.tokenizer.current_token, &token);
-        if &self.tokenizer.current_token == &token {
+        if self.tokenizer.current_token == token {
             let cur_token = self.tokenizer.current_token.clone();
             let cur_type = self.tokenizer.current_token_type;
             self.print_xml_token(&cur_token, cur_type);
+            self.tokenizer.advance();
         } else {
-            println!("syntax error")
+            eprintln!(
+                "Syntax error: expected '{}', got '{}'",
+                token, self.tokenizer.current_token
+            );
+            std::process::exit(1);
         }
-        &self.tokenizer.advance();
     }
 
     fn print_xml_token(&mut self, current_token: &String, current_token_type: Option<TokenType>) {
