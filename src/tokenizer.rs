@@ -68,7 +68,7 @@ impl Tokenizer {
     pub fn advance(&mut self) {
         let mut s: String = String::from("");
         //added this if check to prevent panic
-        // not really sure if this is the best approach but it worked. 
+        // not really sure if this is the best approach but it worked.
         if self.i < self.chars.len() {
             // skip spaces
             while self.chars[self.i] == ' ' || self.chars[self.i] == '\n' {

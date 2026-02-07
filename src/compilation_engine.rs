@@ -85,6 +85,66 @@ impl ComplationEngine {
 
         self.process("(".to_string());
 
+        self.compile_parameter_list();
+
+        self.process(")".to_string());
+    }
+
+    fn compile_subroutine_body(&mut self) {
+        self.process("{".to_string());
+        while self.tokenizer.current_token == "var" {
+            self.compile_var_dec();
+        }
+    }
+
+    fn compile_var_dec(&mut self) {
+        self.process("var".to_string());
+        // (type)
+        match self.tokenizer.current_token_type {
+            Some(TokenType::Keyword) => match self.tokenizer.current_token.as_str() {
+                "int" => self.process("int".to_string()),
+                "char" => self.process("char".to_string()),
+                "boolean" => self.process("boolean".to_string()),
+                _ => print!("something fucked up"),
+            },
+            // this if for classname
+            Some(TokenType::Identifier) => self.process(self.tokenizer.current_token.to_string()),
+            _ => {
+                eprintln!("Syntax error: got '{}'", self.tokenizer.current_token);
+                std::process::exit(1);
+            }
+        }
+
+        // varname
+
+        // first varName
+        if self.tokenizer.current_token_type == Some(TokenType::Identifier) {
+            self.process(self.tokenizer.current_token.to_string());
+        } else {
+            eprintln!(
+                "Syntax error: expected varName, got '{}'",
+                self.tokenizer.current_token
+            );
+            std::process::exit(1);
+        }
+
+        while self.tokenizer.current_token == "," {
+            self.process(",".to_string());
+            match self.tokenizer.current_token_type {
+                Some(TokenType::Identifier) => {
+                    self.process(self.tokenizer.current_token.to_string())
+                }
+                _ => {
+                    eprintln!("Syntax error: got '{}'", self.tokenizer.current_token);
+                    std::process::exit(1);
+                }
+            }
+        }
+
+        self.process(";".to_string());
+    }
+
+    fn compile_parameter_list(&mut self) {
         if self.tokenizer.current_token != ")" {
             // Process type
             match self.tokenizer.current_token_type {
@@ -130,7 +190,6 @@ impl ComplationEngine {
                 self.process(self.tokenizer.current_token.to_string());
             }
         }
-        self.process(")".to_string());
     }
 
     fn compile_class_var_dec(&mut self) {
