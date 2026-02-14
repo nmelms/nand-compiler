@@ -4,6 +4,7 @@ use std::path::{Path, PathBuf};
 
 mod compilation_engine;
 mod tokenizer;
+mod symbol_table;
 
 use tokenizer::Tokenizer;
 
