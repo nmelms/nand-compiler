@@ -1,19 +1,30 @@
+use crate::symbol_table::{self, SymbolTable};
 use crate::tokenizer::{self, TokenType, Tokenizer};
 use std::io::Write;
 use std::{fs::File, process::Output};
 
 pub struct ComplationEngine {
     tokenizer: Tokenizer,
+    symbol_table: SymbolTable,
+    sub_symbol_table: SymbolTable,
     output: File,
-        indent: usize,
+    indent: usize,
 }
 
 impl ComplationEngine {
     pub fn new(tokenizer: Tokenizer, output: File) -> Self {
         let tokenizer = tokenizer;
         let output = output;
+        let symbol_table = SymbolTable::new();
+        let sub_symbol_table = SymbolTable::new();
 
-        Self { tokenizer, output, indent: 0 }
+        Self {
+            tokenizer,
+            output,
+            indent: 0,
+            symbol_table,
+            sub_symbol_table,
+        }
     }
 
     pub fn comple_class(&mut self) {
@@ -42,10 +53,11 @@ impl ComplationEngine {
 
         self.process("}".to_string());
 
-       self.close_tag("class");
+        self.close_tag("class");
     }
 
     fn compile_subroutine(&mut self) {
+        self.sub_symbol_table.reset();
         self.open_tag("subroutineDec");
         //
         match self.tokenizer.current_token.as_str() {
@@ -110,7 +122,6 @@ impl ComplationEngine {
         self.close_tag("subroutineBody");
 
         self.close_tag("subroutineDec");
-
     }
 
     fn compile_subroutine_body(&mut self) {
@@ -325,7 +336,7 @@ impl ComplationEngine {
                         self.compile_expression_list();
                         self.process(")".to_string())
                     }
-                   _ => { /* nothing */ }
+                    _ => { /* nothing */ }
                 }
             }
             Some(TokenType::Symbol) => match self.tokenizer.current_token.as_str() {
@@ -345,8 +356,7 @@ impl ComplationEngine {
                     );
                     std::process::exit(1);
                 }
-            }
-
+            },
 
             _ => print!("error"),
         }
@@ -364,7 +374,6 @@ impl ComplationEngine {
                 total += 1;
                 self.compile_expression();
             }
-        
         }
         self.close_tag("expressionList");
         total
@@ -373,6 +382,7 @@ impl ComplationEngine {
     fn compile_var_dec(&mut self) {
         self.open_tag("varDec");
         self.process("var".to_string());
+        let var_type = self.tokenizer.current_token.clone();
         // (type)
         match self.tokenizer.current_token_type {
             Some(TokenType::Keyword) => match self.tokenizer.current_token.as_str() {
@@ -392,7 +402,10 @@ impl ComplationEngine {
         // varname
 
         // first varName
+        let var_name = self.tokenizer.current_token.clone();
         if self.tokenizer.current_token_type == Some(TokenType::Identifier) {
+            self.sub_symbol_table
+                .define(var_name, &var_type, symbol_table::SymbolType::Var);
             self.process(self.tokenizer.current_token.to_string());
         } else {
             eprintln!(
@@ -406,6 +419,12 @@ impl ComplationEngine {
             self.process(",".to_string());
             match self.tokenizer.current_token_type {
                 Some(TokenType::Identifier) => {
+                    let var_name = self.tokenizer.current_token.clone();
+                    self.sub_symbol_table.define(
+                        var_name,
+                        &var_type,
+                        symbol_table::SymbolType::Var,
+                    );
                     self.process(self.tokenizer.current_token.to_string())
                 }
                 _ => {
@@ -422,6 +441,7 @@ impl ComplationEngine {
     fn compile_parameter_list(&mut self) {
         if self.tokenizer.current_token != ")" {
             // Process type
+            let var_type = self.tokenizer.current_token.clone();
             match self.tokenizer.current_token_type {
                 Some(TokenType::Identifier) => {
                     self.process(self.tokenizer.current_token.to_string())
@@ -440,10 +460,14 @@ impl ComplationEngine {
                 },
             }
             //process varname
+            let var_name = self.tokenizer.current_token.clone();
+            self.sub_symbol_table
+                .define(var_name, &var_type, symbol_table::SymbolType::Arg);
             self.process(self.tokenizer.current_token.to_string());
             while self.tokenizer.current_token == "," {
                 self.process(",".to_string());
                 // Process type
+                let var_type = self.tokenizer.current_token.clone();
                 match self.tokenizer.current_token_type {
                     Some(TokenType::Identifier) => {
                         self.process(self.tokenizer.current_token.to_string())
@@ -462,6 +486,9 @@ impl ComplationEngine {
                     },
                 }
                 //process varname
+                let var_name = self.tokenizer.current_token.clone();
+                self.sub_symbol_table
+                    .define(var_name, &var_type, symbol_table::SymbolType::Arg);
                 self.process(self.tokenizer.current_token.to_string());
             }
         }
@@ -469,13 +496,21 @@ impl ComplationEngine {
 
     fn compile_class_var_dec(&mut self) {
         self.open_tag("classVarDec");
+        let kind: symbol_table::SymbolType;
+        let var_type: String;
         // static and field
         if self.tokenizer.current_token == "static" {
+            kind = symbol_table::SymbolType::Static;
             self.process("static".to_string());
-        } else if self.tokenizer.current_token == "field" {
+            // taking away this else if check mighht need to lookout for bigs on field
+            // if self.tokenizer.current_token == "field"
+        } else {
+            kind = symbol_table::SymbolType::Field;
             self.process("field".to_string());
         }
         // type
+        var_type = self.tokenizer.current_token.clone();
+
         match self.tokenizer.current_token.as_str() {
             "int" => self.process("int".to_string()),
             "char" => self.process("char".to_string()),
@@ -488,10 +523,14 @@ impl ComplationEngine {
                 std::process::exit(1);
             }
         }
+        let name = self.tokenizer.current_token.clone();
+        self.symbol_table.define(name, &var_type, kind);
         self.process(self.tokenizer.current_token.clone());
         // identify multiple variables
         while self.tokenizer.current_token == "," {
             self.process(",".to_string());
+            let name = self.tokenizer.current_token.clone();
+            self.symbol_table.define(name, &var_type, kind);
             self.process(self.tokenizer.current_token.clone());
         }
 
@@ -516,7 +555,7 @@ impl ComplationEngine {
     }
 
     fn write_line(&mut self, s: &str) {
-        let pad = "  ".repeat(self.indent); 
+        let pad = "  ".repeat(self.indent);
         writeln!(self.output, "{}{}", pad, s).unwrap();
     }
 
@@ -530,16 +569,71 @@ impl ComplationEngine {
         self.write_line(&format!("</{}>", tag));
     }
 
-
     fn print_xml_token(&mut self, current_token: &String, current_token_type: Option<TokenType>) {
         match current_token_type {
-            Some(TokenType::Identifier) => self.write_line(&format!("<identifier> {} </identifier>", current_token)),
-            Some(TokenType::Keyword) => self.write_line(&format!("<keyword> {} </keyword>", current_token)),
-            Some(TokenType::Symbol) => self.write_line(&format!("<symbol> {} </symbol>", current_token)),
-            Some(TokenType::IntConst) => self.write_line(&format!("<integerConstant> {} </integerConstant>", current_token)),
-            Some(TokenType::StringConst) => self.write_line(&format!("<stringConstant> {} </stringConstant>", current_token)),
+            Some(TokenType::Identifier) => {
+                // checks subroutine symbol table
+                if let Some(kind) = self.sub_symbol_table.kind_of(current_token) {
+                    let category = match kind {
+                        symbol_table::SymbolType::Static => "static",
+                        symbol_table::SymbolType::Field => "field",
+                        symbol_table::SymbolType::Arg => "arg",
+                        symbol_table::SymbolType::Var => "var",
+                        _ => "class",
+                    };
+                    self.write_line(&format!(
+                        "
+                        <identifier> 
+                        \t<name>{}</name>
+                        \t<category>{}</category>
+                        \t<index>{}</index> 
+                        </identifier>
+                    ",
+                        current_token,
+                        category,
+                        self.sub_symbol_table.index_of(current_token)
+                    ))
+                    // if nothting is found we check the class symbol table
+                } else if let Some(kind) = self.symbol_table.kind_of(current_token) {
+                    let category = match kind {
+                        symbol_table::SymbolType::Static => "static",
+                        symbol_table::SymbolType::Field => "field",
+                        symbol_table::SymbolType::Arg => "arg",
+                        symbol_table::SymbolType::Var => "var",
+                        _ => "class",
+                    };
+                    self.write_line(&format!(
+                        "
+                        <identifier> 
+                        \t<name>{}</name>
+                        \t<category>{}</category>
+                        \t<index>{}</index> 
+                        </identifier>
+                    ",
+                        current_token,
+                        category,
+                        self.symbol_table.index_of(current_token)
+                    ))
+                    // else nothing is found
+                } else {
+                    self.write_line(&format!("<identifier> {} </identifier>", current_token))
+                }
+            }
+            Some(TokenType::Keyword) => {
+                self.write_line(&format!("<keyword> {} </keyword>", current_token))
+            }
+            Some(TokenType::Symbol) => {
+                self.write_line(&format!("<symbol> {} </symbol>", current_token))
+            }
+            Some(TokenType::IntConst) => self.write_line(&format!(
+                "<integerConstant> {} </integerConstant>",
+                current_token
+            )),
+            Some(TokenType::StringConst) => self.write_line(&format!(
+                "<stringConstant> {} </stringConstant>",
+                current_token
+            )),
             _ => println!("no match"),
         }
     }
-
 }

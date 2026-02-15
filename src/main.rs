@@ -3,13 +3,15 @@ use std::fs::{self, File};
 use std::path::{Path, PathBuf};
 
 mod compilation_engine;
-mod tokenizer;
 mod symbol_table;
+mod tokenizer;
 
 use tokenizer::Tokenizer;
 
 fn main() {
-    let source = env::args().nth(1).expect("usage: jack_analyzer <file.jack | directory>");
+    let source = env::args()
+        .nth(1)
+        .expect("usage: jack_analyzer <file.jack | directory>");
     let path = Path::new(&source);
 
     if path.is_file() {
@@ -62,8 +64,8 @@ fn output_xml_path(input_jack: &Path) -> PathBuf {
 
 fn compile_one(input_jack: &Path) -> Result<(), String> {
     let out_path = output_xml_path(input_jack);
-    let output = File::create(&out_path)
-        .map_err(|e| format!("create {}: {}", out_path.display(), e))?;
+    let output =
+        File::create(&out_path).map_err(|e| format!("create {}: {}", out_path.display(), e))?;
 
     let input_str = input_jack
         .to_str()

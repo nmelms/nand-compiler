@@ -5,15 +5,33 @@
   <classVarDec>
     <keyword> field </keyword>
     <keyword> int </keyword>
-    <identifier> x </identifier>
+    
+                        <identifier> 
+                        	<name>x</name>
+                        	<category>field</category>
+                        	<index>0</index> 
+                        </identifier>
+                    
     <symbol> , </symbol>
-    <identifier> y </identifier>
+    
+                        <identifier> 
+                        	<name>y</name>
+                        	<category>field</category>
+                        	<index>1</index> 
+                        </identifier>
+                    
     <symbol> ; </symbol>
   </classVarDec>
   <classVarDec>
     <keyword> field </keyword>
     <keyword> int </keyword>
-    <identifier> size </identifier>
+    
+                        <identifier> 
+                        	<name>size</name>
+                        	<category>field</category>
+                        	<index>2</index> 
+                        </identifier>
+                    
     <symbol> ; </symbol>
   </classVarDec>
   <subroutineDec>
@@ -23,13 +41,31 @@
     <symbol> ( </symbol>
     <parameterList>
       <keyword> int </keyword>
-      <identifier> Ax </identifier>
+      
+                        <identifier> 
+                        	<name>Ax</name>
+                        	<category>arg</category>
+                        	<index>0</index> 
+                        </identifier>
+                    
       <symbol> , </symbol>
       <keyword> int </keyword>
-      <identifier> Ay </identifier>
+      
+                        <identifier> 
+                        	<name>Ay</name>
+                        	<category>arg</category>
+                        	<index>1</index> 
+                        </identifier>
+                    
       <symbol> , </symbol>
       <keyword> int </keyword>
-      <identifier> Asize </identifier>
+      
+                        <identifier> 
+                        	<name>Asize</name>
+                        	<category>arg</category>
+                        	<index>2</index> 
+                        </identifier>
+                    
     </parameterList>
     <symbol> ) </symbol>
     <subroutineBody>
@@ -37,33 +73,69 @@
       <statements>
         <letStatement>
           <keyword> let </keyword>
-          <identifier> x </identifier>
+          
+                        <identifier> 
+                        	<name>x</name>
+                        	<category>field</category>
+                        	<index>0</index> 
+                        </identifier>
+                    
           <symbol> = </symbol>
           <expression>
             <term>
-              <identifier> Ax </identifier>
+              
+                        <identifier> 
+                        	<name>Ax</name>
+                        	<category>arg</category>
+                        	<index>0</index> 
+                        </identifier>
+                    
             </term>
           </expression>
           <symbol> ; </symbol>
         </letStatement>
         <letStatement>
           <keyword> let </keyword>
-          <identifier> y </identifier>
+          
+                        <identifier> 
+                        	<name>y</name>
+                        	<category>field</category>
+                        	<index>1</index> 
+                        </identifier>
+                    
           <symbol> = </symbol>
           <expression>
             <term>
-              <identifier> Ay </identifier>
+              
+                        <identifier> 
+                        	<name>Ay</name>
+                        	<category>arg</category>
+                        	<index>1</index> 
+                        </identifier>
+                    
             </term>
           </expression>
           <symbol> ; </symbol>
         </letStatement>
         <letStatement>
           <keyword> let </keyword>
-          <identifier> size </identifier>
+          
+                        <identifier> 
+                        	<name>size</name>
+                        	<category>field</category>
+                        	<index>2</index> 
+                        </identifier>
+                    
           <symbol> = </symbol>
           <expression>
             <term>
-              <identifier> Asize </identifier>
+              
+                        <identifier> 
+                        	<name>Asize</name>
+                        	<category>arg</category>
+                        	<index>2</index> 
+                        </identifier>
+                    
             </term>
           </expression>
           <symbol> ; </symbol>
@@ -161,33 +233,69 @@
           <expressionList>
             <expression>
               <term>
-                <identifier> x </identifier>
+                
+                        <identifier> 
+                        	<name>x</name>
+                        	<category>field</category>
+                        	<index>0</index> 
+                        </identifier>
+                    
               </term>
             </expression>
             <symbol> , </symbol>
             <expression>
               <term>
-                <identifier> y </identifier>
+                
+                        <identifier> 
+                        	<name>y</name>
+                        	<category>field</category>
+                        	<index>1</index> 
+                        </identifier>
+                    
               </term>
             </expression>
             <symbol> , </symbol>
             <expression>
               <term>
-                <identifier> x </identifier>
+                
+                        <identifier> 
+                        	<name>x</name>
+                        	<category>field</category>
+                        	<index>0</index> 
+                        </identifier>
+                    
               </term>
               <symbol> + </symbol>
               <term>
-                <identifier> size </identifier>
+                
+                        <identifier> 
+                        	<name>size</name>
+                        	<category>field</category>
+                        	<index>2</index> 
+                        </identifier>
+                    
               </term>
             </expression>
             <symbol> , </symbol>
             <expression>
               <term>
-                <identifier> y </identifier>
+                
+                        <identifier> 
+                        	<name>y</name>
+                        	<category>field</category>
+                        	<index>1</index> 
+                        </identifier>
+                    
               </term>
               <symbol> + </symbol>
               <term>
-                <identifier> size </identifier>
+                
+                        <identifier> 
+                        	<name>size</name>
+                        	<category>field</category>
+                        	<index>2</index> 
+                        </identifier>
+                    
               </term>
             </expression>
           </expressionList>
@@ -238,33 +346,69 @@
           <expressionList>
             <expression>
               <term>
-                <identifier> x </identifier>
+                
+                        <identifier> 
+                        	<name>x</name>
+                        	<category>field</category>
+                        	<index>0</index> 
+                        </identifier>
+                    
               </term>
             </expression>
             <symbol> , </symbol>
             <expression>
               <term>
-                <identifier> y </identifier>
+                
+                        <identifier> 
+                        	<name>y</name>
+                        	<category>field</category>
+                        	<index>1</index> 
+                        </identifier>
+                    
               </term>
             </expression>
             <symbol> , </symbol>
             <expression>
               <term>
-                <identifier> x </identifier>
+                
+                        <identifier> 
+                        	<name>x</name>
+                        	<category>field</category>
+                        	<index>0</index> 
+                        </identifier>
+                    
               </term>
               <symbol> + </symbol>
               <term>
-                <identifier> size </identifier>
+                
+                        <identifier> 
+                        	<name>size</name>
+                        	<category>field</category>
+                        	<index>2</index> 
+                        </identifier>
+                    
               </term>
             </expression>
             <symbol> , </symbol>
             <expression>
               <term>
-                <identifier> y </identifier>
+                
+                        <identifier> 
+                        	<name>y</name>
+                        	<category>field</category>
+                        	<index>1</index> 
+                        </identifier>
+                    
               </term>
               <symbol> + </symbol>
               <term>
-                <identifier> size </identifier>
+                
+                        <identifier> 
+                        	<name>size</name>
+                        	<category>field</category>
+                        	<index>2</index> 
+                        </identifier>
+                    
               </term>
             </expression>
           </expressionList>
@@ -301,11 +445,23 @@
                   <symbol> ( </symbol>
                   <expression>
                     <term>
-                      <identifier> y </identifier>
+                      
+                        <identifier> 
+                        	<name>y</name>
+                        	<category>field</category>
+                        	<index>1</index> 
+                        </identifier>
+                    
                     </term>
                     <symbol> + </symbol>
                     <term>
-                      <identifier> size </identifier>
+                      
+                        <identifier> 
+                        	<name>size</name>
+                        	<category>field</category>
+                        	<index>2</index> 
+                        </identifier>
+                    
                     </term>
                   </expression>
                   <symbol> ) </symbol>
@@ -325,11 +481,23 @@
                   <symbol> ( </symbol>
                   <expression>
                     <term>
-                      <identifier> x </identifier>
+                      
+                        <identifier> 
+                        	<name>x</name>
+                        	<category>field</category>
+                        	<index>0</index> 
+                        </identifier>
+                    
                     </term>
                     <symbol> + </symbol>
                     <term>
-                      <identifier> size </identifier>
+                      
+                        <identifier> 
+                        	<name>size</name>
+                        	<category>field</category>
+                        	<index>2</index> 
+                        </identifier>
+                    
                     </term>
                   </expression>
                   <symbol> ) </symbol>
@@ -356,11 +524,23 @@
             </doStatement>
             <letStatement>
               <keyword> let </keyword>
-              <identifier> size </identifier>
+              
+                        <identifier> 
+                        	<name>size</name>
+                        	<category>field</category>
+                        	<index>2</index> 
+                        </identifier>
+                    
               <symbol> = </symbol>
               <expression>
                 <term>
-                  <identifier> size </identifier>
+                  
+                        <identifier> 
+                        	<name>size</name>
+                        	<category>field</category>
+                        	<index>2</index> 
+                        </identifier>
+                    
                 </term>
                 <symbol> + </symbol>
                 <term>
@@ -405,7 +585,13 @@
           <symbol> ( </symbol>
           <expression>
             <term>
-              <identifier> size </identifier>
+              
+                        <identifier> 
+                        	<name>size</name>
+                        	<category>field</category>
+                        	<index>2</index> 
+                        </identifier>
+                    
             </term>
             <symbol> &gt; </symbol>
             <term>
@@ -426,11 +612,23 @@
             </doStatement>
             <letStatement>
               <keyword> let </keyword>
-              <identifier> size </identifier>
+              
+                        <identifier> 
+                        	<name>size</name>
+                        	<category>field</category>
+                        	<index>2</index> 
+                        </identifier>
+                    
               <symbol> = </symbol>
               <expression>
                 <term>
-                  <identifier> size </identifier>
+                  
+                        <identifier> 
+                        	<name>size</name>
+                        	<category>field</category>
+                        	<index>2</index> 
+                        </identifier>
+                    
                 </term>
                 <symbol> - </symbol>
                 <term>
@@ -475,7 +673,13 @@
           <symbol> ( </symbol>
           <expression>
             <term>
-              <identifier> y </identifier>
+              
+                        <identifier> 
+                        	<name>y</name>
+                        	<category>field</category>
+                        	<index>1</index> 
+                        </identifier>
+                    
             </term>
             <symbol> &gt; </symbol>
             <term>
@@ -510,7 +714,13 @@
               <expressionList>
                 <expression>
                   <term>
-                    <identifier> x </identifier>
+                    
+                        <identifier> 
+                        	<name>x</name>
+                        	<category>field</category>
+                        	<index>0</index> 
+                        </identifier>
+                    
                   </term>
                 </expression>
                 <symbol> , </symbol>
@@ -519,11 +729,23 @@
                     <symbol> ( </symbol>
                     <expression>
                       <term>
-                        <identifier> y </identifier>
+                        
+                        <identifier> 
+                        	<name>y</name>
+                        	<category>field</category>
+                        	<index>1</index> 
+                        </identifier>
+                    
                       </term>
                       <symbol> + </symbol>
                       <term>
-                        <identifier> size </identifier>
+                        
+                        <identifier> 
+                        	<name>size</name>
+                        	<category>field</category>
+                        	<index>2</index> 
+                        </identifier>
+                    
                       </term>
                     </expression>
                     <symbol> ) </symbol>
@@ -536,21 +758,45 @@
                 <symbol> , </symbol>
                 <expression>
                   <term>
-                    <identifier> x </identifier>
+                    
+                        <identifier> 
+                        	<name>x</name>
+                        	<category>field</category>
+                        	<index>0</index> 
+                        </identifier>
+                    
                   </term>
                   <symbol> + </symbol>
                   <term>
-                    <identifier> size </identifier>
+                    
+                        <identifier> 
+                        	<name>size</name>
+                        	<category>field</category>
+                        	<index>2</index> 
+                        </identifier>
+                    
                   </term>
                 </expression>
                 <symbol> , </symbol>
                 <expression>
                   <term>
-                    <identifier> y </identifier>
+                    
+                        <identifier> 
+                        	<name>y</name>
+                        	<category>field</category>
+                        	<index>1</index> 
+                        </identifier>
+                    
                   </term>
                   <symbol> + </symbol>
                   <term>
-                    <identifier> size </identifier>
+                    
+                        <identifier> 
+                        	<name>size</name>
+                        	<category>field</category>
+                        	<index>2</index> 
+                        </identifier>
+                    
                   </term>
                 </expression>
               </expressionList>
@@ -559,11 +805,23 @@
             </doStatement>
             <letStatement>
               <keyword> let </keyword>
-              <identifier> y </identifier>
+              
+                        <identifier> 
+                        	<name>y</name>
+                        	<category>field</category>
+                        	<index>1</index> 
+                        </identifier>
+                    
               <symbol> = </symbol>
               <expression>
                 <term>
-                  <identifier> y </identifier>
+                  
+                        <identifier> 
+                        	<name>y</name>
+                        	<category>field</category>
+                        	<index>1</index> 
+                        </identifier>
+                    
                 </term>
                 <symbol> - </symbol>
                 <term>
@@ -597,29 +855,59 @@
               <expressionList>
                 <expression>
                   <term>
-                    <identifier> x </identifier>
+                    
+                        <identifier> 
+                        	<name>x</name>
+                        	<category>field</category>
+                        	<index>0</index> 
+                        </identifier>
+                    
                   </term>
                 </expression>
                 <symbol> , </symbol>
                 <expression>
                   <term>
-                    <identifier> y </identifier>
+                    
+                        <identifier> 
+                        	<name>y</name>
+                        	<category>field</category>
+                        	<index>1</index> 
+                        </identifier>
+                    
                   </term>
                 </expression>
                 <symbol> , </symbol>
                 <expression>
                   <term>
-                    <identifier> x </identifier>
+                    
+                        <identifier> 
+                        	<name>x</name>
+                        	<category>field</category>
+                        	<index>0</index> 
+                        </identifier>
+                    
                   </term>
                   <symbol> + </symbol>
                   <term>
-                    <identifier> size </identifier>
+                    
+                        <identifier> 
+                        	<name>size</name>
+                        	<category>field</category>
+                        	<index>2</index> 
+                        </identifier>
+                    
                   </term>
                 </expression>
                 <symbol> , </symbol>
                 <expression>
                   <term>
-                    <identifier> y </identifier>
+                    
+                        <identifier> 
+                        	<name>y</name>
+                        	<category>field</category>
+                        	<index>1</index> 
+                        </identifier>
+                    
                   </term>
                   <symbol> + </symbol>
                   <term>
@@ -660,11 +948,23 @@
               <symbol> ( </symbol>
               <expression>
                 <term>
-                  <identifier> y </identifier>
+                  
+                        <identifier> 
+                        	<name>y</name>
+                        	<category>field</category>
+                        	<index>1</index> 
+                        </identifier>
+                    
                 </term>
                 <symbol> + </symbol>
                 <term>
-                  <identifier> size </identifier>
+                  
+                        <identifier> 
+                        	<name>size</name>
+                        	<category>field</category>
+                        	<index>2</index> 
+                        </identifier>
+                    
                 </term>
               </expression>
               <symbol> ) </symbol>
@@ -702,29 +1002,59 @@
               <expressionList>
                 <expression>
                   <term>
-                    <identifier> x </identifier>
+                    
+                        <identifier> 
+                        	<name>x</name>
+                        	<category>field</category>
+                        	<index>0</index> 
+                        </identifier>
+                    
                   </term>
                 </expression>
                 <symbol> , </symbol>
                 <expression>
                   <term>
-                    <identifier> y </identifier>
+                    
+                        <identifier> 
+                        	<name>y</name>
+                        	<category>field</category>
+                        	<index>1</index> 
+                        </identifier>
+                    
                   </term>
                 </expression>
                 <symbol> , </symbol>
                 <expression>
                   <term>
-                    <identifier> x </identifier>
+                    
+                        <identifier> 
+                        	<name>x</name>
+                        	<category>field</category>
+                        	<index>0</index> 
+                        </identifier>
+                    
                   </term>
                   <symbol> + </symbol>
                   <term>
-                    <identifier> size </identifier>
+                    
+                        <identifier> 
+                        	<name>size</name>
+                        	<category>field</category>
+                        	<index>2</index> 
+                        </identifier>
+                    
                   </term>
                 </expression>
                 <symbol> , </symbol>
                 <expression>
                   <term>
-                    <identifier> y </identifier>
+                    
+                        <identifier> 
+                        	<name>y</name>
+                        	<category>field</category>
+                        	<index>1</index> 
+                        </identifier>
+                    
                   </term>
                   <symbol> + </symbol>
                   <term>
@@ -737,11 +1067,23 @@
             </doStatement>
             <letStatement>
               <keyword> let </keyword>
-              <identifier> y </identifier>
+              
+                        <identifier> 
+                        	<name>y</name>
+                        	<category>field</category>
+                        	<index>1</index> 
+                        </identifier>
+                    
               <symbol> = </symbol>
               <expression>
                 <term>
-                  <identifier> y </identifier>
+                  
+                        <identifier> 
+                        	<name>y</name>
+                        	<category>field</category>
+                        	<index>1</index> 
+                        </identifier>
+                    
                 </term>
                 <symbol> + </symbol>
                 <term>
@@ -775,7 +1117,13 @@
               <expressionList>
                 <expression>
                   <term>
-                    <identifier> x </identifier>
+                    
+                        <identifier> 
+                        	<name>x</name>
+                        	<category>field</category>
+                        	<index>0</index> 
+                        </identifier>
+                    
                   </term>
                 </expression>
                 <symbol> , </symbol>
@@ -784,11 +1132,23 @@
                     <symbol> ( </symbol>
                     <expression>
                       <term>
-                        <identifier> y </identifier>
+                        
+                        <identifier> 
+                        	<name>y</name>
+                        	<category>field</category>
+                        	<index>1</index> 
+                        </identifier>
+                    
                       </term>
                       <symbol> + </symbol>
                       <term>
-                        <identifier> size </identifier>
+                        
+                        <identifier> 
+                        	<name>size</name>
+                        	<category>field</category>
+                        	<index>2</index> 
+                        </identifier>
+                    
                       </term>
                     </expression>
                     <symbol> ) </symbol>
@@ -801,21 +1161,45 @@
                 <symbol> , </symbol>
                 <expression>
                   <term>
-                    <identifier> x </identifier>
+                    
+                        <identifier> 
+                        	<name>x</name>
+                        	<category>field</category>
+                        	<index>0</index> 
+                        </identifier>
+                    
                   </term>
                   <symbol> + </symbol>
                   <term>
-                    <identifier> size </identifier>
+                    
+                        <identifier> 
+                        	<name>size</name>
+                        	<category>field</category>
+                        	<index>2</index> 
+                        </identifier>
+                    
                   </term>
                 </expression>
                 <symbol> , </symbol>
                 <expression>
                   <term>
-                    <identifier> y </identifier>
+                    
+                        <identifier> 
+                        	<name>y</name>
+                        	<category>field</category>
+                        	<index>1</index> 
+                        </identifier>
+                    
                   </term>
                   <symbol> + </symbol>
                   <term>
-                    <identifier> size </identifier>
+                    
+                        <identifier> 
+                        	<name>size</name>
+                        	<category>field</category>
+                        	<index>2</index> 
+                        </identifier>
+                    
                   </term>
                 </expression>
               </expressionList>
@@ -849,7 +1233,13 @@
           <symbol> ( </symbol>
           <expression>
             <term>
-              <identifier> x </identifier>
+              
+                        <identifier> 
+                        	<name>x</name>
+                        	<category>field</category>
+                        	<index>0</index> 
+                        </identifier>
+                    
             </term>
             <symbol> &gt; </symbol>
             <term>
@@ -887,11 +1277,23 @@
                     <symbol> ( </symbol>
                     <expression>
                       <term>
-                        <identifier> x </identifier>
+                        
+                        <identifier> 
+                        	<name>x</name>
+                        	<category>field</category>
+                        	<index>0</index> 
+                        </identifier>
+                    
                       </term>
                       <symbol> + </symbol>
                       <term>
-                        <identifier> size </identifier>
+                        
+                        <identifier> 
+                        	<name>size</name>
+                        	<category>field</category>
+                        	<index>2</index> 
+                        </identifier>
+                    
                       </term>
                     </expression>
                     <symbol> ) </symbol>
@@ -904,27 +1306,57 @@
                 <symbol> , </symbol>
                 <expression>
                   <term>
-                    <identifier> y </identifier>
+                    
+                        <identifier> 
+                        	<name>y</name>
+                        	<category>field</category>
+                        	<index>1</index> 
+                        </identifier>
+                    
                   </term>
                 </expression>
                 <symbol> , </symbol>
                 <expression>
                   <term>
-                    <identifier> x </identifier>
+                    
+                        <identifier> 
+                        	<name>x</name>
+                        	<category>field</category>
+                        	<index>0</index> 
+                        </identifier>
+                    
                   </term>
                   <symbol> + </symbol>
                   <term>
-                    <identifier> size </identifier>
+                    
+                        <identifier> 
+                        	<name>size</name>
+                        	<category>field</category>
+                        	<index>2</index> 
+                        </identifier>
+                    
                   </term>
                 </expression>
                 <symbol> , </symbol>
                 <expression>
                   <term>
-                    <identifier> y </identifier>
+                    
+                        <identifier> 
+                        	<name>y</name>
+                        	<category>field</category>
+                        	<index>1</index> 
+                        </identifier>
+                    
                   </term>
                   <symbol> + </symbol>
                   <term>
-                    <identifier> size </identifier>
+                    
+                        <identifier> 
+                        	<name>size</name>
+                        	<category>field</category>
+                        	<index>2</index> 
+                        </identifier>
+                    
                   </term>
                 </expression>
               </expressionList>
@@ -933,11 +1365,23 @@
             </doStatement>
             <letStatement>
               <keyword> let </keyword>
-              <identifier> x </identifier>
+              
+                        <identifier> 
+                        	<name>x</name>
+                        	<category>field</category>
+                        	<index>0</index> 
+                        </identifier>
+                    
               <symbol> = </symbol>
               <expression>
                 <term>
-                  <identifier> x </identifier>
+                  
+                        <identifier> 
+                        	<name>x</name>
+                        	<category>field</category>
+                        	<index>0</index> 
+                        </identifier>
+                    
                 </term>
                 <symbol> - </symbol>
                 <term>
@@ -971,19 +1415,37 @@
               <expressionList>
                 <expression>
                   <term>
-                    <identifier> x </identifier>
+                    
+                        <identifier> 
+                        	<name>x</name>
+                        	<category>field</category>
+                        	<index>0</index> 
+                        </identifier>
+                    
                   </term>
                 </expression>
                 <symbol> , </symbol>
                 <expression>
                   <term>
-                    <identifier> y </identifier>
+                    
+                        <identifier> 
+                        	<name>y</name>
+                        	<category>field</category>
+                        	<index>1</index> 
+                        </identifier>
+                    
                   </term>
                 </expression>
                 <symbol> , </symbol>
                 <expression>
                   <term>
-                    <identifier> x </identifier>
+                    
+                        <identifier> 
+                        	<name>x</name>
+                        	<category>field</category>
+                        	<index>0</index> 
+                        </identifier>
+                    
                   </term>
                   <symbol> + </symbol>
                   <term>
@@ -993,11 +1455,23 @@
                 <symbol> , </symbol>
                 <expression>
                   <term>
-                    <identifier> y </identifier>
+                    
+                        <identifier> 
+                        	<name>y</name>
+                        	<category>field</category>
+                        	<index>1</index> 
+                        </identifier>
+                    
                   </term>
                   <symbol> + </symbol>
                   <term>
-                    <identifier> size </identifier>
+                    
+                        <identifier> 
+                        	<name>size</name>
+                        	<category>field</category>
+                        	<index>2</index> 
+                        </identifier>
+                    
                   </term>
                 </expression>
               </expressionList>
@@ -1034,11 +1508,23 @@
               <symbol> ( </symbol>
               <expression>
                 <term>
-                  <identifier> x </identifier>
+                  
+                        <identifier> 
+                        	<name>x</name>
+                        	<category>field</category>
+                        	<index>0</index> 
+                        </identifier>
+                    
                 </term>
                 <symbol> + </symbol>
                 <term>
-                  <identifier> size </identifier>
+                  
+                        <identifier> 
+                        	<name>size</name>
+                        	<category>field</category>
+                        	<index>2</index> 
+                        </identifier>
+                    
                 </term>
               </expression>
               <symbol> ) </symbol>
@@ -1076,19 +1562,37 @@
               <expressionList>
                 <expression>
                   <term>
-                    <identifier> x </identifier>
+                    
+                        <identifier> 
+                        	<name>x</name>
+                        	<category>field</category>
+                        	<index>0</index> 
+                        </identifier>
+                    
                   </term>
                 </expression>
                 <symbol> , </symbol>
                 <expression>
                   <term>
-                    <identifier> y </identifier>
+                    
+                        <identifier> 
+                        	<name>y</name>
+                        	<category>field</category>
+                        	<index>1</index> 
+                        </identifier>
+                    
                   </term>
                 </expression>
                 <symbol> , </symbol>
                 <expression>
                   <term>
-                    <identifier> x </identifier>
+                    
+                        <identifier> 
+                        	<name>x</name>
+                        	<category>field</category>
+                        	<index>0</index> 
+                        </identifier>
+                    
                   </term>
                   <symbol> + </symbol>
                   <term>
@@ -1098,11 +1602,23 @@
                 <symbol> , </symbol>
                 <expression>
                   <term>
-                    <identifier> y </identifier>
+                    
+                        <identifier> 
+                        	<name>y</name>
+                        	<category>field</category>
+                        	<index>1</index> 
+                        </identifier>
+                    
                   </term>
                   <symbol> + </symbol>
                   <term>
-                    <identifier> size </identifier>
+                    
+                        <identifier> 
+                        	<name>size</name>
+                        	<category>field</category>
+                        	<index>2</index> 
+                        </identifier>
+                    
                   </term>
                 </expression>
               </expressionList>
@@ -1111,11 +1627,23 @@
             </doStatement>
             <letStatement>
               <keyword> let </keyword>
-              <identifier> x </identifier>
+              
+                        <identifier> 
+                        	<name>x</name>
+                        	<category>field</category>
+                        	<index>0</index> 
+                        </identifier>
+                    
               <symbol> = </symbol>
               <expression>
                 <term>
-                  <identifier> x </identifier>
+                  
+                        <identifier> 
+                        	<name>x</name>
+                        	<category>field</category>
+                        	<index>0</index> 
+                        </identifier>
+                    
                 </term>
                 <symbol> + </symbol>
                 <term>
@@ -1152,11 +1680,23 @@
                     <symbol> ( </symbol>
                     <expression>
                       <term>
-                        <identifier> x </identifier>
+                        
+                        <identifier> 
+                        	<name>x</name>
+                        	<category>field</category>
+                        	<index>0</index> 
+                        </identifier>
+                    
                       </term>
                       <symbol> + </symbol>
                       <term>
-                        <identifier> size </identifier>
+                        
+                        <identifier> 
+                        	<name>size</name>
+                        	<category>field</category>
+                        	<index>2</index> 
+                        </identifier>
+                    
                       </term>
                     </expression>
                     <symbol> ) </symbol>
@@ -1169,27 +1709,57 @@
                 <symbol> , </symbol>
                 <expression>
                   <term>
-                    <identifier> y </identifier>
+                    
+                        <identifier> 
+                        	<name>y</name>
+                        	<category>field</category>
+                        	<index>1</index> 
+                        </identifier>
+                    
                   </term>
                 </expression>
                 <symbol> , </symbol>
                 <expression>
                   <term>
-                    <identifier> x </identifier>
+                    
+                        <identifier> 
+                        	<name>x</name>
+                        	<category>field</category>
+                        	<index>0</index> 
+                        </identifier>
+                    
                   </term>
                   <symbol> + </symbol>
                   <term>
-                    <identifier> size </identifier>
+                    
+                        <identifier> 
+                        	<name>size</name>
+                        	<category>field</category>
+                        	<index>2</index> 
+                        </identifier>
+                    
                   </term>
                 </expression>
                 <symbol> , </symbol>
                 <expression>
                   <term>
-                    <identifier> y </identifier>
+                    
+                        <identifier> 
+                        	<name>y</name>
+                        	<category>field</category>
+                        	<index>1</index> 
+                        </identifier>
+                    
                   </term>
                   <symbol> + </symbol>
                   <term>
-                    <identifier> size </identifier>
+                    
+                        <identifier> 
+                        	<name>size</name>
+                        	<category>field</category>
+                        	<index>2</index> 
+                        </identifier>
+                    
                   </term>
                 </expression>
               </expressionList>
