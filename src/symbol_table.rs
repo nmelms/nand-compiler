@@ -93,12 +93,30 @@ impl SymbolTable{
         }
     }
 
-    pub fn kind_of(&self, name: String) -> Option<SymbolType>{
-        let value = self.table.get(&name);
+    pub fn kind_of(&self, name: &String) -> Option<SymbolType>{
+        let value = self.table.get(name);
         
         match value{
             Some(symbol) => Some(symbol.kind),
             None => None
+        }
+    }
+
+    pub fn type_of(&self, name: &String) -> String{
+        let value = self.table.get(name);
+        
+        match value{
+            Some(symbol) => symbol.symbol_type.clone(),
+            None => panic!("Error in type_of Symbol not found: {}", name)
+        }
+    }
+
+    pub fn index_of(&self, name: &String) -> usize{
+        let value = self.table.get(name);
+        
+        match value{
+            Some(symbol) => symbol.index,
+            None => panic!("Error in index_of Symbol not found: {}", name)
         }
     }
 } 
