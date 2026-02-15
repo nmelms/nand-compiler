@@ -74,4 +74,20 @@ impl SymbolTable{
     }
 
 
+    pub fn var_count(&self, kind: SymbolType) -> usize{
+        match kind{
+            SymbolType::Static => {
+                self.static_index
+            },
+            SymbolType::Field => {
+                self.field_index 
+            },
+            SymbolType::Arg => {
+                self.arg_index
+            },
+            SymbolType::Var => {
+                self.var_index
+            },
+        }
+    }
 } 
