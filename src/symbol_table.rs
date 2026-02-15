@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+use crate::symbol_table;
+
 
 pub struct SymbolTable {
     table: HashMap<String, Symbol>,
@@ -14,7 +16,7 @@ pub struct Symbol{
     kind: SymbolType,
     index: usize,
 }
-
+#[derive(Copy, Clone)]
 pub enum SymbolType{
     Static,
     Field, 
@@ -88,6 +90,15 @@ impl SymbolTable{
             SymbolType::Var => {
                 self.var_index
             },
+        }
+    }
+
+    pub fn kind_of(&self, name: String) -> Option<SymbolType>{
+        let value = self.table.get(&name);
+        
+        match value{
+            Some(symbol) => Some(symbol.kind),
+            None => None
         }
     }
 } 
