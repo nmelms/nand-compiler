@@ -14,4 +14,19 @@ impl VMWriter{
     pub fn write_function(&mut self,name: &str, n_vars: usize){
         writeln!(self.output, "function {} {}", name, n_vars).expect("error writing fucntion to file");
     }
+
+    pub fn write_arithmetic(&mut self, command: &str) {
+        writeln!(self.output, "{}", command).expect("Failed to write arithmetic");
+    }
+
+    pub fn write_push(&mut self, segment: &str, index: usize){
+        writeln!(self.output, "push {} {}", segment, index).expect("Failed to write push");
+    }
+
+    pub fn write_call(&mut self, name: &str, n_args: usize){
+        writeln!(self.output, "call {} {}", name, n_args).expect("Failed to write call");
+    }
+    pub fn write_return(&mut self){
+        writeln!(self.output, "return").expect("Failed to write call");
+    }
 }
