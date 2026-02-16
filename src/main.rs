@@ -5,6 +5,7 @@ use std::path::{Path, PathBuf};
 mod compilation_engine;
 mod symbol_table;
 mod tokenizer;
+mod vm_writer;
 
 use tokenizer::Tokenizer;
 
@@ -58,7 +59,7 @@ fn is_jack_file(path: &Path) -> bool {
 
 fn output_xml_path(input_jack: &Path) -> PathBuf {
     let mut out = input_jack.to_path_buf();
-    out.set_extension("xml");
+    out.set_extension("vm");
     out
 }
 
@@ -73,8 +74,7 @@ fn compile_one(input_jack: &Path) -> Result<(), String> {
 
     let mut tokenizer = Tokenizer::new(input_str);
     tokenizer.advance();
-
-    let mut engine = compilation_engine::ComplationEngine::new(tokenizer, output);
+    let mut engine = compilation_engine::ComplationEngine::new(tokenizer,output );
     engine.comple_class();
 
     println!("Wrote {}", out_path.display());

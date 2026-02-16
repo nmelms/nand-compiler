@@ -1,5 +1,6 @@
 use crate::symbol_table::{self, SymbolTable};
 use crate::tokenizer::{self, TokenType, Tokenizer};
+use crate::vm_writer::{self, VMWriter};
 use std::io::Write;
 use std::{fs::File, process::Output};
 
@@ -7,30 +8,34 @@ pub struct ComplationEngine {
     tokenizer: Tokenizer,
     symbol_table: SymbolTable,
     sub_symbol_table: SymbolTable,
-    output: File,
+    pub class_name: String, 
     indent: usize,
+    vm_writer: VMWriter,
 }
 
 impl ComplationEngine {
     pub fn new(tokenizer: Tokenizer, output: File) -> Self {
         let tokenizer = tokenizer;
-        let output = output;
         let symbol_table = SymbolTable::new();
         let sub_symbol_table = SymbolTable::new();
+        let class_name = String::new();
+        let vm_writer = VMWriter::new(output);
 
         Self {
             tokenizer,
-            output,
             indent: 0,
             symbol_table,
             sub_symbol_table,
+            class_name,
+            vm_writer,
         }
     }
 
     pub fn comple_class(&mut self) {
-        self.open_tag("class");
         self.process("class".to_string());
         if self.tokenizer.current_token_type == Some(TokenType::Identifier) {
+            // save Main classname to use later
+            self.class_name = self.tokenizer.current_token.clone();
             self.process(self.tokenizer.current_token.clone());
         } else {
             eprintln!(
@@ -52,14 +57,11 @@ impl ComplationEngine {
         }
 
         self.process("}".to_string());
-
-        self.close_tag("class");
     }
 
     fn compile_subroutine(&mut self) {
         self.sub_symbol_table.reset();
-        self.open_tag("subroutineDec");
-        //
+
         match self.tokenizer.current_token.as_str() {
             "constructor" => self.process("constructor".to_string()),
             "function" => self.process("function".to_string()),
@@ -96,7 +98,9 @@ impl ComplationEngine {
             }
         }
         // subroutine name
+        let function_name;
         if self.tokenizer.current_token_type == Some(TokenType::Identifier) {
+            function_name = self.tokenizer.current_token.clone();
             self.process(self.tokenizer.current_token.to_string());
         } else {
             println!(
@@ -105,35 +109,35 @@ impl ComplationEngine {
             );
             std::process::exit(1);
         }
+
+        let full_name = format!("{} {}", self.class_name, function_name);
+
         self.process("(".to_string());
-        self.open_tag("parameterList");
         self.compile_parameter_list();
-        self.close_tag("parameterList");
         self.process(")".to_string());
 
         // body
-        self.open_tag("subroutineBody");
         self.process("{".to_string());
         while self.tokenizer.current_token == "var" {
             self.compile_var_dec(); // make varDec wrapped too
         }
+        self.vm_writer.write_function(&full_name, self.sub_symbol_table.var_count(symbol_table::SymbolType::Var));
         self.compile_statements();
-        self.process("}".to_string());
-        self.close_tag("subroutineBody");
 
-        self.close_tag("subroutineDec");
+        self.process("}".to_string());
+
     }
 
-    fn compile_subroutine_body(&mut self) {
-        self.open_tag("subroutineBody");
-        self.process("{".to_string());
-        while self.tokenizer.current_token == "var" {
-            self.compile_var_dec();
-        }
-        self.compile_statements();
-        self.process("}".to_string());
-        self.close_tag("subroutineBody");
-    }
+    // fn compile_subroutine_body(&mut self) {
+    //     self.open_tag("subroutineBody");
+    //     self.process("{".to_string());
+    //     while self.tokenizer.current_token == "var" {
+    //         self.compile_var_dec();
+    //     }
+    //     self.compile_statements();
+    //     self.process("}".to_string());
+    //     self.close_tag("subroutineBody");
+    // }
 
     fn compile_statements(&mut self) {
         self.open_tag("statements");
@@ -556,7 +560,8 @@ impl ComplationEngine {
 
     fn write_line(&mut self, s: &str) {
         let pad = "  ".repeat(self.indent);
-        writeln!(self.output, "{}{}", pad, s).unwrap();
+        print!("you called write_line and we removed some stuff here")
+        // writeln!(self.output, "{}{}", pad, s).unwrap();
     }
 
     fn open_tag(&mut self, tag: &str) {
