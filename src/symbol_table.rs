@@ -73,7 +73,6 @@ impl SymbolTable {
                 index: index,
             },
         );
-
     }
 
     pub fn var_count(&self, kind: SymbolType) -> usize {

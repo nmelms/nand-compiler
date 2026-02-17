@@ -74,7 +74,7 @@ fn compile_one(input_jack: &Path) -> Result<(), String> {
 
     let mut tokenizer = Tokenizer::new(input_str);
     tokenizer.advance();
-    let mut engine = compilation_engine::ComplationEngine::new(tokenizer,output );
+    let mut engine = compilation_engine::ComplationEngine::new(tokenizer, output);
     engine.comple_class();
 
     println!("Wrote {}", out_path.display());

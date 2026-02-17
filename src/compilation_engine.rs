@@ -8,7 +8,7 @@ pub struct ComplationEngine {
     tokenizer: Tokenizer,
     symbol_table: SymbolTable,
     sub_symbol_table: SymbolTable,
-    pub class_name: String, 
+    pub class_name: String,
     indent: usize,
     vm_writer: VMWriter,
 }
@@ -46,7 +46,10 @@ impl ComplationEngine {
         }
 
         self.process("{".to_string());
-        println!("after process curely currenmt toke: {}", self.tokenizer.current_token);
+        println!(
+            "after process curely currenmt toke: {}",
+            self.tokenizer.current_token
+        );
         while self.tokenizer.current_token == "static" || self.tokenizer.current_token == "field" {
             self.compile_class_var_dec();
         }
@@ -124,11 +127,14 @@ impl ComplationEngine {
         while self.tokenizer.current_token == "var" {
             self.compile_var_dec(); // make varDec wrapped too
         }
-        self.vm_writer.write_function(&full_name, self.sub_symbol_table.var_count(symbol_table::SymbolType::Var));
+        self.vm_writer.write_function(
+            &full_name,
+            self.sub_symbol_table
+                .var_count(symbol_table::SymbolType::Var),
+        );
         self.compile_statements();
 
         self.process("}".to_string());
-
     }
 
     // fn compile_subroutine_body(&mut self) {
@@ -205,7 +211,7 @@ impl ComplationEngine {
         self.process("return".to_string());
         if self.starts_expression() {
             self.compile_expression();
-        }else{
+        } else {
             self.vm_writer.write_push("constant", 0);
         }
         self.vm_writer.write_return();
@@ -299,7 +305,7 @@ impl ComplationEngine {
             let op = self.tokenizer.current_token.clone();
             self.process(self.tokenizer.current_token.to_string());
             self.compile_term();
-            match op.as_str(){
+            match op.as_str() {
                 "+" => self.vm_writer.write_arithmetic("add"),
                 "*" => self.vm_writer.write_arithmetic("mul"),
                 _ => println!("you passed in an op that did not match"),
@@ -312,7 +318,10 @@ impl ComplationEngine {
         self.open_tag("term");
         match self.tokenizer.current_token_type {
             Some(TokenType::IntConst) => {
-                println!("inside compile_term {}", self.tokenizer.current_token.to_string());
+                println!(
+                    "inside compile_term {}",
+                    self.tokenizer.current_token.to_string()
+                );
                 let value: usize = self.tokenizer.current_token.parse().unwrap();
                 self.vm_writer.write_push("constant", value);
                 self.process(self.tokenizer.current_token.to_string());

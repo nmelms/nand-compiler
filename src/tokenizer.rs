@@ -71,11 +71,54 @@ impl Tokenizer {
         // not really sure if this is the best approach but it worked.
         if self.i < self.chars.len() {
             // skip spaces
-            while self.chars[self.i] == ' ' 
-            || self.chars[self.i] == '\n' 
-            || self.chars[self.i] == '\t'   // ← Add this!
-            || self.chars[self.i] == '\r' { // ← And this for Windows line endings
-                self.i += 1;
+            // Skip whitespace and comments
+            loop {
+                // Skip whitespace
+                while self.i < self.chars.len()
+                    && (self.chars[self.i] == ' '
+                        || self.chars[self.i] == '\n'
+                        || self.chars[self.i] == '\t'
+                        || self.chars[self.i] == '\r')
+                {
+                    self.i += 1;
+                }
+
+                if self.i >= self.chars.len() {
+                    return;
+                }
+
+                // Check for // comments
+                if self.chars[self.i] == '/'
+                    && self.i + 1 < self.chars.len()
+                    && self.chars[self.i + 1] == '/'
+                {
+                    while self.i < self.chars.len() && self.chars[self.i] != '\n' {
+                        self.i += 1;
+                    }
+                    continue;
+                }
+
+                // Check for /* */ comments
+                if self.chars[self.i] == '/'
+                    && self.i + 1 < self.chars.len()
+                    && self.chars[self.i + 1] == '*'
+                {
+                    self.i += 2;
+                    while self.i + 1 < self.chars.len() {
+                        if self.chars[self.i] == '*' && self.chars[self.i + 1] == '/' {
+                            self.i += 2;
+                            break;
+                        }
+                        self.i += 1;
+                    }
+                    continue;
+                }
+
+                break;
+            }
+
+            if self.i >= self.chars.len() {
+                return;
             }
 
             // consume keyword or identifier
