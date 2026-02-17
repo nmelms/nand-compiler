@@ -46,6 +46,7 @@ impl ComplationEngine {
         }
 
         self.process("{".to_string());
+        println!("after process curely currenmt toke: {}", self.tokenizer.current_token);
         while self.tokenizer.current_token == "static" || self.tokenizer.current_token == "field" {
             self.compile_class_var_dec();
         }
@@ -53,6 +54,7 @@ impl ComplationEngine {
             || self.tokenizer.current_token == "function"
             || self.tokenizer.current_token == "method"
         {
+            println!("inside con fun meth");
             self.compile_subroutine();
         }
 
@@ -60,6 +62,7 @@ impl ComplationEngine {
     }
 
     fn compile_subroutine(&mut self) {
+        println!("compeile subroutine is running");
         self.sub_symbol_table.reset();
 
         match self.tokenizer.current_token.as_str() {
@@ -110,7 +113,7 @@ impl ComplationEngine {
             std::process::exit(1);
         }
 
-        let full_name = format!("{} {}", self.class_name, function_name);
+        let full_name = format!("{}.{}", self.class_name, function_name);
 
         self.process("(".to_string());
         self.compile_parameter_list();
@@ -140,6 +143,7 @@ impl ComplationEngine {
     // }
 
     fn compile_statements(&mut self) {
+        println!("inside compile statemetns");
         self.open_tag("statements");
         while self.tokenizer.current_token == "let".to_string()
             || self.tokenizer.current_token == "if".to_string()
@@ -198,13 +202,14 @@ impl ComplationEngine {
     }
 
     fn compile_return(&mut self) {
-        self.open_tag("returnStatement");
         self.process("return".to_string());
         if self.starts_expression() {
             self.compile_expression();
+        }else{
+            self.vm_writer.write_push("constant", 0);
         }
+        self.vm_writer.write_return();
         self.process(";".to_string());
-        self.close_tag("returnStatement");
     }
 
     fn starts_expression(&self) -> bool {
@@ -224,23 +229,29 @@ impl ComplationEngine {
     }
 
     fn compile_do(&mut self) {
-        self.open_tag("doStatement");
+        // todo!("create compile do in VM code")
+        let mut function_name = String::new();
+        let mut num_args: i32 = 0;
         self.process("do".to_string());
         // subroutine
         match self.tokenizer.current_token_type {
             Some(TokenType::Identifier) => {
+                function_name = function_name + &self.tokenizer.current_token;
+
                 self.process(self.tokenizer.current_token.to_string());
                 match self.tokenizer.current_token.as_str() {
                     // subroutine call
                     "(" => {
                         self.process("(".to_string());
-                        self.compile_expression_list();
+                        num_args = self.compile_expression_list();
                         self.process(")".to_string())
                     }
-                    // other type of subroutiner call
+                    // other type of subroutine call
                     "." => {
+                        function_name = function_name + ".";
                         self.process(".".to_string());
                         if self.tokenizer.current_token_type == Some(TokenType::Identifier) {
+                            function_name = function_name + &self.tokenizer.current_token;
                             self.process(self.tokenizer.current_token.to_string());
                         } else {
                             eprintln!(
@@ -250,7 +261,7 @@ impl ComplationEngine {
                             std::process::exit(1);
                         }
                         self.process("(".to_string());
-                        self.compile_expression_list();
+                        num_args = self.compile_expression_list();
                         self.process(")".to_string())
                     }
                     _ => println!("check in compile do. Unknown error"),
@@ -258,6 +269,8 @@ impl ComplationEngine {
             }
             _ => println!("check in compile do. Unknown error"),
         }
+        self.vm_writer.write_call(&function_name, num_args);
+        self.vm_writer.write_pop("temp", 0);
         self.process(";".to_string());
         self.close_tag("doStatement");
     }
@@ -275,6 +288,7 @@ impl ComplationEngine {
     }
 
     fn compile_expression(&mut self) {
+        println!("inside expression");
         self.open_tag("expression");
         self.compile_term();
 
@@ -282,8 +296,14 @@ impl ComplationEngine {
             self.tokenizer.current_token.as_str(),
             "+" | "-" | "*" | "/" | "|" | "=" | "&lt;" | "&gt;" | "&amp;"
         ) {
+            let op = self.tokenizer.current_token.clone();
             self.process(self.tokenizer.current_token.to_string());
             self.compile_term();
+            match op.as_str(){
+                "+" => self.vm_writer.write_arithmetic("add"),
+                "*" => self.vm_writer.write_arithmetic("mul"),
+                _ => println!("you passed in an op that did not match"),
+            }
         }
         self.close_tag("expression");
     }
@@ -292,6 +312,9 @@ impl ComplationEngine {
         self.open_tag("term");
         match self.tokenizer.current_token_type {
             Some(TokenType::IntConst) => {
+                println!("inside compile_term {}", self.tokenizer.current_token.to_string());
+                let value: usize = self.tokenizer.current_token.parse().unwrap();
+                self.vm_writer.write_push("constant", value);
                 self.process(self.tokenizer.current_token.to_string());
             }
             Some(TokenType::StringConst) => {
@@ -544,11 +567,14 @@ impl ComplationEngine {
     }
 
     fn process(&mut self, token: String) {
+        println!("current token: {}", self.tokenizer.current_token);
         if self.tokenizer.current_token == token {
+            println!("check was correct");
             let cur_token = self.tokenizer.current_token.clone();
             let cur_type = self.tokenizer.current_token_type;
-            self.print_xml_token(&cur_token, cur_type);
+            // self.print_xml_token(&cur_token, cur_type);
             self.tokenizer.advance();
+            println!("at the end {}", self.tokenizer.current_token);
         } else {
             eprintln!(
                 "Syntax error: expected '{}', got '{}'",
@@ -560,7 +586,7 @@ impl ComplationEngine {
 
     fn write_line(&mut self, s: &str) {
         let pad = "  ".repeat(self.indent);
-        print!("you called write_line and we removed some stuff here")
+        // print!("you called write_line and we removed some stuff here")
         // writeln!(self.output, "{}{}", pad, s).unwrap();
     }
 

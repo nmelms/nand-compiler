@@ -23,10 +23,14 @@ impl VMWriter{
         writeln!(self.output, "push {} {}", segment, index).expect("Failed to write push");
     }
 
-    pub fn write_call(&mut self, name: &str, n_args: usize){
+    pub fn write_call(&mut self, name: &str, n_args: i32){
         writeln!(self.output, "call {} {}", name, n_args).expect("Failed to write call");
     }
     pub fn write_return(&mut self){
         writeln!(self.output, "return").expect("Failed to write call");
+    }
+
+    pub fn write_pop(&mut self, segment: &str, index: usize){
+        writeln!(self.output, "pop {} {}", segment, index).expect("Failed to write push");
     }
 }

@@ -71,7 +71,10 @@ impl Tokenizer {
         // not really sure if this is the best approach but it worked.
         if self.i < self.chars.len() {
             // skip spaces
-            while self.chars[self.i] == ' ' || self.chars[self.i] == '\n' {
+            while self.chars[self.i] == ' ' 
+            || self.chars[self.i] == '\n' 
+            || self.chars[self.i] == '\t'   // ← Add this!
+            || self.chars[self.i] == '\r' { // ← And this for Windows line endings
                 self.i += 1;
             }
 
