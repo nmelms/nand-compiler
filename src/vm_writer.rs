@@ -34,4 +34,16 @@ impl VMWriter {
     pub fn write_pop(&mut self, segment: &str, index: usize) {
         writeln!(self.output, "pop {} {}", segment, index).expect("Failed to write push");
     }
+
+    pub fn write_label(&mut self, label: &String){
+        writeln!(self.output, "label L{}", label).expect("Failed to write label");
+    }
+
+    pub fn write_if(&mut self, label: &String){
+        writeln!(self.output, "if-goto L{}", label).expect("Failed to write if");
+    }
+
+    pub fn write_goto(&mut self, label: &String){
+        writeln!(self.output, "goto L{}", label).expect("Failed to write goto");
+    }
 }

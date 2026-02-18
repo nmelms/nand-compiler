@@ -1,6 +1,7 @@
-use crate::symbol_table::{self, SymbolTable};
+use crate::symbol_table::{self, SymbolTable, SymbolType};
 use crate::tokenizer::{self, TokenType, Tokenizer};
 use crate::vm_writer::{self, VMWriter};
+use core::panic;
 use std::io::Write;
 use std::{fs::File, process::Output};
 
@@ -11,6 +12,7 @@ pub struct ComplationEngine {
     pub class_name: String,
     indent: usize,
     vm_writer: VMWriter,
+    label_index: usize,
 }
 
 impl ComplationEngine {
@@ -20,6 +22,7 @@ impl ComplationEngine {
         let sub_symbol_table = SymbolTable::new();
         let class_name = String::new();
         let vm_writer = VMWriter::new(output);
+        let label_index = 1;
 
         Self {
             tokenizer,
@@ -28,6 +31,7 @@ impl ComplationEngine {
             sub_symbol_table,
             class_name,
             vm_writer,
+            label_index,
         }
     }
 
@@ -57,7 +61,6 @@ impl ComplationEngine {
             || self.tokenizer.current_token == "function"
             || self.tokenizer.current_token == "method"
         {
-            println!("inside con fun meth");
             self.compile_subroutine();
         }
 
@@ -65,7 +68,6 @@ impl ComplationEngine {
     }
 
     fn compile_subroutine(&mut self) {
-        println!("compeile subroutine is running");
         self.sub_symbol_table.reset();
 
         match self.tokenizer.current_token.as_str() {
@@ -149,7 +151,6 @@ impl ComplationEngine {
     // }
 
     fn compile_statements(&mut self) {
-        println!("inside compile statemetns");
         self.open_tag("statements");
         while self.tokenizer.current_token == "let".to_string()
             || self.tokenizer.current_token == "if".to_string()
@@ -170,10 +171,15 @@ impl ComplationEngine {
     }
 
     fn compile_let(&mut self) {
+        // remeber varname Done
+        // compile expression puts the expression on the stack
+        // pop varname from the symbol table (Local 3, static 1 for example)
         self.open_tag("letStatement");
         self.process("let".to_string());
+        let mut var_name: String = String::new();
         // varName
         if self.tokenizer.current_token_type == Some(TokenType::Identifier) {
+            var_name = self.tokenizer.current_token.clone();
             self.process(self.tokenizer.current_token.to_string());
         }
         // [ expression ]
@@ -185,6 +191,34 @@ impl ComplationEngine {
 
         self.process("=".to_string());
         self.compile_expression();
+        let mut segment = String::new();
+        let mut index: usize = 0;
+        // checks sub and call sym table for the variable so we can push the proper segment
+        if let Some(kind) = self.sub_symbol_table.kind_of(&var_name) {
+            let temp = match Some(kind) {
+                Some(SymbolType::Var) => "local",
+                Some(SymbolType::Arg) => "argument",
+                Some(SymbolType::Static) => "static",
+                Some(SymbolType::Field) => "this",
+                _ => panic!("error in compile_let kind of"),
+            };
+            segment = temp.to_string();
+            index = self.sub_symbol_table.index_of(&var_name);
+        } else if let Some(kind) = self.symbol_table.kind_of(&var_name) {
+            let temp = match Some(kind) {
+                Some(SymbolType::Var) => "local",
+                Some(SymbolType::Arg) => "argument",
+                Some(SymbolType::Static) => "static",
+                Some(SymbolType::Field) => "this",
+                _ => panic!("error in compile_let kind of"),
+            };
+            segment = temp.to_string();
+            index = self.symbol_table.index_of(&var_name);
+        } else {
+            panic!("var was not found in sub or class table check compile let");
+        }
+
+        self.vm_writer.write_pop(&segment, index);
         self.process(";".to_string());
         self.close_tag("letStatement");
     }
@@ -282,19 +316,24 @@ impl ComplationEngine {
     }
 
     fn compile_while(&mut self) {
-        self.open_tag("whileStatement");
+        let cur_label_idx = self.label_index;
+        let mut next_label_idx = self.label_index + 1;
+        self.vm_writer.write_label(&self.label_index.to_string());
         self.process("while".to_string());
         self.process("(".to_string());
         self.compile_expression();
         self.process(")".to_string());
+        self.vm_writer.write_arithmetic("not");
+        self.vm_writer.write_if(&next_label_idx.to_string());
         self.process("{".to_string());
         self.compile_statements();
         self.process("}".to_string());
-        self.close_tag("whileStatement");
+        self.vm_writer.write_goto(&cur_label_idx.to_string());
+        self.vm_writer.write_label(&next_label_idx.to_string());
+        self.label_index = next_label_idx + 1;
     }
 
     fn compile_expression(&mut self) {
-        println!("inside expression");
         self.open_tag("expression");
         self.compile_term();
 
@@ -308,6 +347,12 @@ impl ComplationEngine {
             match op.as_str() {
                 "+" => self.vm_writer.write_arithmetic("add"),
                 "*" => self.vm_writer.write_arithmetic("mul"),
+                "-" => self.vm_writer.write_arithmetic("sub"),
+                "/" => self.vm_writer.write_call("Math.divide", 2),
+                "|" => self.vm_writer.write_arithmetic("or"),
+                "&lt;" => self.vm_writer.write_arithmetic("lt"),
+                "&gt;" => self.vm_writer.write_arithmetic("gt"),
+                "&amp;" => self.vm_writer.write_arithmetic("and"),
                 _ => println!("you passed in an op that did not match"),
             }
         }
@@ -343,7 +388,37 @@ impl ComplationEngine {
                 }
             },
             Some(TokenType::Identifier) => {
+                let mut var = self.tokenizer.current_token.clone();
+                let mut index: usize = 0;
+                let mut var_count: i32 = 0;
+                let mut segment = String::new();
+
+                if let Some(kind) = self.sub_symbol_table.kind_of(&var) {
+                    //  check subroutine table
+                    let temp = match kind {
+                        SymbolType::Var => "local",
+                        SymbolType::Arg => "argument",
+                        SymbolType::Static => "static",
+                        SymbolType::Field => "this",
+                    };
+                    segment = temp.to_string();
+                    index = self.sub_symbol_table.index_of(&var);
+                } else if let Some(kind) = self.symbol_table.kind_of(&var) {
+                    // check class symbold table
+                    let temp = match kind {
+                        SymbolType::Var => "local",
+                        SymbolType::Arg => "argument",
+                        SymbolType::Static => "static",
+                        SymbolType::Field => "this",
+                    };
+                    segment = temp.to_string();
+                    index = self.symbol_table.index_of(&var);
+                }
                 self.process(self.tokenizer.current_token.to_string());
+                if self.tokenizer.current_token != "." && self.tokenizer.current_token != "(" {
+                    self.vm_writer.write_push(&segment, index);
+                }
+
                 match self.tokenizer.current_token.as_str() {
                     "[" => {
                         self.process("[".to_string());
@@ -353,13 +428,15 @@ impl ComplationEngine {
                     // subroutine call
                     "(" => {
                         self.process("(".to_string());
-                        self.compile_expression_list();
+                        var_count = self.compile_expression_list();
+                        self.vm_writer.write_call(&var, var_count);
                         self.process(")".to_string())
                     }
-                    // other type of subroutiner call
+                    // other type of subroutine call
                     "." => {
                         self.process(".".to_string());
                         if self.tokenizer.current_token_type == Some(TokenType::Identifier) {
+                            var = var + "." + &self.tokenizer.current_token.to_string();
                             self.process(self.tokenizer.current_token.to_string());
                         } else {
                             eprintln!(
@@ -369,7 +446,8 @@ impl ComplationEngine {
                             std::process::exit(1);
                         }
                         self.process("(".to_string());
-                        self.compile_expression_list();
+                        var_count = self.compile_expression_list();
+                        self.vm_writer.write_call(&var, var_count);
                         self.process(")".to_string())
                     }
                     _ => { /* nothing */ }
@@ -576,14 +654,11 @@ impl ComplationEngine {
     }
 
     fn process(&mut self, token: String) {
-        println!("current token: {}", self.tokenizer.current_token);
         if self.tokenizer.current_token == token {
-            println!("check was correct");
             let cur_token = self.tokenizer.current_token.clone();
             let cur_type = self.tokenizer.current_token_type;
             // self.print_xml_token(&cur_token, cur_type);
             self.tokenizer.advance();
-            println!("at the end {}", self.tokenizer.current_token);
         } else {
             eprintln!(
                 "Syntax error: expected '{}', got '{}'",
