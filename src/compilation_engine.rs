@@ -151,7 +151,6 @@ impl ComplationEngine {
     // }
 
     fn compile_statements(&mut self) {
-        self.open_tag("statements");
         while self.tokenizer.current_token == "let".to_string()
             || self.tokenizer.current_token == "if".to_string()
             || self.tokenizer.current_token == "while".to_string()
@@ -167,14 +166,12 @@ impl ComplationEngine {
                 _ => println!("the end"),
             }
         }
-        self.close_tag("statements");
     }
 
     fn compile_let(&mut self) {
         // remeber varname Done
         // compile expression puts the expression on the stack
         // pop varname from the symbol table (Local 3, static 1 for example)
-        self.open_tag("letStatement");
         self.process("let".to_string());
         let mut var_name: String = String::new();
         // varName
@@ -220,26 +217,39 @@ impl ComplationEngine {
 
         self.vm_writer.write_pop(&segment, index);
         self.process(";".to_string());
-        self.close_tag("letStatement");
     }
 
     fn compile_if(&mut self) {
-        self.open_tag("ifStatement");
+        let false_lbl = self.label_index;
+        let end_lbl = self.label_index + 1;
+        self.label_index += 2;
+
         self.process("if".to_string());
         self.process("(".to_string());
         self.compile_expression();
         self.process(")".to_string());
+
+        self.vm_writer.write_if(&false_lbl.to_string());
+
         self.process("{".to_string());
         self.compile_statements();
         self.process("}".to_string());
+
+        self.vm_writer.write_goto(&end_lbl.to_string());
+        self.vm_writer.write_label(&false_lbl.to_string());
+
         if self.tokenizer.current_token == "else".to_string() {
             self.process("else".to_string());
             self.process("{".to_string());
             self.compile_statements();
             self.process("}".to_string());
         }
-        self.close_tag("ifStatement");
+
+        self.vm_writer.write_label(&end_lbl.to_string());
     }
+
+
+
 
     fn compile_return(&mut self) {
         self.process("return".to_string());
@@ -312,29 +322,28 @@ impl ComplationEngine {
         self.vm_writer.write_call(&function_name, num_args);
         self.vm_writer.write_pop("temp", 0);
         self.process(";".to_string());
-        self.close_tag("doStatement");
     }
 
     fn compile_while(&mut self) {
-        let cur_label_idx = self.label_index;
-        let mut next_label_idx = self.label_index + 1;
-        self.vm_writer.write_label(&self.label_index.to_string());
+        let start_label = self.label_index;
+        let end_label = self.label_index + 1;
+        self.label_index += 2;  
+        
+        self.vm_writer.write_label(&start_label.to_string());
         self.process("while".to_string());
         self.process("(".to_string());
         self.compile_expression();
         self.process(")".to_string());
         self.vm_writer.write_arithmetic("not");
-        self.vm_writer.write_if(&next_label_idx.to_string());
+        self.vm_writer.write_if(&end_label.to_string());
         self.process("{".to_string());
         self.compile_statements();
         self.process("}".to_string());
-        self.vm_writer.write_goto(&cur_label_idx.to_string());
-        self.vm_writer.write_label(&next_label_idx.to_string());
-        self.label_index = next_label_idx + 1;
+        self.vm_writer.write_goto(&start_label.to_string());
+        self.vm_writer.write_label(&end_label.to_string());
     }
 
     fn compile_expression(&mut self) {
-        self.open_tag("expression");
         self.compile_term();
 
         while matches!(
@@ -346,6 +355,7 @@ impl ComplationEngine {
             self.compile_term();
             match op.as_str() {
                 "+" => self.vm_writer.write_arithmetic("add"),
+                "=" => self.vm_writer.write_arithmetic("eq"),
                 "*" => self.vm_writer.write_arithmetic("mul"),
                 "-" => self.vm_writer.write_arithmetic("sub"),
                 "/" => self.vm_writer.write_call("Math.divide", 2),
@@ -356,17 +366,12 @@ impl ComplationEngine {
                 _ => println!("you passed in an op that did not match"),
             }
         }
-        self.close_tag("expression");
     }
 
     fn compile_term(&mut self) {
-        self.open_tag("term");
         match self.tokenizer.current_token_type {
             Some(TokenType::IntConst) => {
-                println!(
-                    "inside compile_term {}",
-                    self.tokenizer.current_token.to_string()
-                );
+
                 let value: usize = self.tokenizer.current_token.parse().unwrap();
                 self.vm_writer.write_push("constant", value);
                 self.process(self.tokenizer.current_token.to_string());
@@ -375,10 +380,23 @@ impl ComplationEngine {
                 self.process(self.tokenizer.current_token.to_string());
             }
             Some(TokenType::Keyword) => match self.tokenizer.current_token.as_str() {
-                "true" => self.process(self.tokenizer.current_token.to_string()),
-                "false" => self.process(self.tokenizer.current_token.to_string()),
-                "null" => self.process(self.tokenizer.current_token.to_string()),
-                "this" => self.process(self.tokenizer.current_token.to_string()),
+                "true" => {
+                    self.vm_writer.write_push("constant", 0);
+                    self.vm_writer.write_arithmetic("not");
+                    self.process(self.tokenizer.current_token.to_string());
+                }
+                "false" => {
+                    self.vm_writer.write_push("constant", 0);
+                    self.process(self.tokenizer.current_token.to_string());
+                }
+                "null" => {
+                    self.vm_writer.write_push("constant", 0);
+                    self.process(self.tokenizer.current_token.to_string());
+                }
+                "this" => {
+                    self.vm_writer.write_push("pointer", 0);
+                    self.process(self.tokenizer.current_token.to_string());
+                }
                 _ => {
                     eprintln!(
                         "Syntax error: expected (true | false | null | this), got '{}'",
@@ -455,8 +473,14 @@ impl ComplationEngine {
             }
             Some(TokenType::Symbol) => match self.tokenizer.current_token.as_str() {
                 "-" | "~" => {
+                    let op = self.tokenizer.current_token.clone();
                     self.process(self.tokenizer.current_token.to_string());
                     self.compile_term();
+                    if op == "-"{
+                        self.vm_writer.write_arithmetic("neg");
+                    }else{
+                        self.vm_writer.write_arithmetic("not");
+                    }
                 }
                 "(" => {
                     self.process("(".to_string());
@@ -474,11 +498,9 @@ impl ComplationEngine {
 
             _ => print!("error"),
         }
-        self.close_tag("term");
     }
 
     fn compile_expression_list(&mut self) -> i32 {
-        self.open_tag("expressionList");
         let mut total = 0;
         if self.tokenizer.current_token != ")".to_string() {
             total += 1;
@@ -489,12 +511,10 @@ impl ComplationEngine {
                 self.compile_expression();
             }
         }
-        self.close_tag("expressionList");
         total
     }
 
     fn compile_var_dec(&mut self) {
-        self.open_tag("varDec");
         self.process("var".to_string());
         let var_type = self.tokenizer.current_token.clone();
         // (type)
@@ -549,7 +569,6 @@ impl ComplationEngine {
         }
 
         self.process(";".to_string());
-        self.close_tag("varDec");
     }
 
     fn compile_parameter_list(&mut self) {
@@ -609,7 +628,6 @@ impl ComplationEngine {
     }
 
     fn compile_class_var_dec(&mut self) {
-        self.open_tag("classVarDec");
         let kind: symbol_table::SymbolType;
         let var_type: String;
         // static and field
@@ -650,7 +668,6 @@ impl ComplationEngine {
 
         self.process(";".to_string());
 
-        self.close_tag("classVarDec");
     }
 
     fn process(&mut self, token: String) {
@@ -672,17 +689,8 @@ impl ComplationEngine {
         let pad = "  ".repeat(self.indent);
         // print!("you called write_line and we removed some stuff here")
         // writeln!(self.output, "{}{}", pad, s).unwrap();
-    }
+    } 
 
-    fn open_tag(&mut self, tag: &str) {
-        self.write_line(&format!("<{}>", tag));
-        self.indent += 1;
-    }
-
-    fn close_tag(&mut self, tag: &str) {
-        self.indent -= 1;
-        self.write_line(&format!("</{}>", tag));
-    }
 
     fn print_xml_token(&mut self, current_token: &String, current_token_type: Option<TokenType>) {
         match current_token_type {
